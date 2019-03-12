@@ -1,3 +1,75 @@
+## 2013
+
+* A Qualitative Evaluation of Social Support by an Empathic Agent,
+by Janneke van der Zwaan, Virginia Dignum, and Catholijn Jonker.
+In: _Intelligent Virtual Agents_, 2013, pages 358-367.
+DOI: [10.1007/978-3-642-40415-3_32](https://doi.org/10.1007/978-3-642-40415-3_32)
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/zwaan_2013_iva.bib.txt))
+* On Technology Against Cyberbullying,
+by Janneke van der Zwaan, Virginia Dignum, Catholijn Jonker, and Simone van 't Hof.
+In: _Responsible Innovation Volume 1: Innovative Solutions for Global Issues_, 2013, pages 369-392.
+DOI: [10.1007/978-94-017-8956-1_21](https://doi.org/10.1007/978-94-017-8956-1_21)
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/zwaan_2013_ribook.bib.txt))
+* [Do Underlying Attitudes Affect Users' Subjective Experiences? The Case of an Empathic Agent](http://www.ifaamas.org/Proceedings/aamas2013/docs/p1331.pdf),
+by Janneke van der Zwaan, Virginia Dignum, and Catholijn Jonker.
+In: _Proceedings of the 12th International Conference on Autonomous Agents and Multiagent Systems (AAMAS 2013)_, 2013, pages 1331-1332.
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/zwaan_2013_aamas.bib.txt))
+* [Robin, an Empathic Virtual Buddy for Social Support (demo)](http://www.aamas-conference.org/Proceedings/aamas2013/docs/p1413.pdf),
+by Janneke van der Zwaan, Virginia Dignum, and Catholijn Jonker.
+In: _Proceedings of the 12th International Conference on Autonomous Agents and Multiagent Systems (AAMAS 2013)_, 2013, pages 1413-1414.
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/zwaan_2013_aamas_demo.bib.txt))
+* [The Effect of Variations in Emotional Expressiveness on Social Support](https://github.com/jvdzwaan/jvdzwaan.github.io/blob/master/pdf/Zwaan_et_al_effect_of_emotional_expressiveness.pdf),
+by Janneke van der Zwaan, Virginia Dignum, and Catholijn Jonker.
+In: _Proceedings of the 2013 Workshop on Computers as Social Actors_, 2013, pages 9-20.
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/zwaan_2013_casa.bib.txt))
+
+## 2012
+
+* A Conversation Model Enabling Intelligent Agents to Give Emotional Support,
+by Janneke van der Zwaan, Virginia Dignum, and Catholijn Jonker.
+In:
+DOI: [10.1007/978-3-642-30732-4_6](https://doi.org/10.1007/978-3-642-30732-4_6)
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/Zwaan_IEA_2012.bib.txt))
+* [A Conversational Agent for Social Support: Validation of Supportive Dialogue Sequences](http://www.mmi.tudelft.nl/~catholijn/publications/sites/default/files/Zwaan_Conversational%20agent%202012.pdf),
+by Janneke van der Zwaan, Virginia Dignum, and Catholijn Jonker.
+In: _Intelligent Virtual Agents_, 2012, pages 499-501.
+DOI: [10.1007/978-3-642-33197-8_58](http://dx.doi.org/10.1007/978-3-642-33197-8_58)
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/zwaan_2012_IVA.bib.txt))
+* A BDI Dialogue Agent for Social Support: Specification and Evaluation Method,
+by Janneke van der Zwaan, Virginia Dignum, and Catholijn Jonker.
+In: _Proceedings of the 3rd Workshop on Emotional and Empathic Agents @ AAMAS 2012_.
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/zwaan_2012_eea_at_aamas.bib.txt))
+* [A BDI Dialogue Agent for Social Support: Specification of Verbal Support Types](https://ii.tudelft.nl/sites/default/files/Zwaan_BDI%20dialogue%20Specificaton%202012.pdf),
+by Janneke van der Zwaan, Virginia Dignum, and Catholijn Jonker.
+In: _International Foundation for Autonomous Agents and Multiagent Systems_, 2012 pages 1183-1184.
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/Zwaan_2012_aamas_ext_abs.bib.txt))
+* User Validation of an Empathic Virtual Buddy against Cyberbullying,
+by Janneke van der Zwaan, Elke Geraerts, Virginia Dignum, and Catholijn Jonker.
+In: Studies in health technology and informatics, 2012, volume 181, pages 243-247.
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/zwaan_2012_cyber17.bib.txt))
+* Corpus-Based Validation of a Dialogue Model for Social Support,
+by Janneke van der Zwaan, Virginia Dignum, and Catholijn Jonker.
+In: _Proceedings of the 24th Benelux Conference on Artificial Intelligence (BNAIC)_, 2012, pages 258-265.
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/zwaan_2012_bnaic.bib.txt))
+* A BDI Dialogue Agent for Social Support: Specification and Evaluation Method (B-paper),
+by Janneke van der Zwaan, Virginia Dignum, and Catholijn Jonker.
+In: _Proceedings of the 24th Benelux Conference on Artificial Intelligence (BNAIC)_, 2012, pages 339-340.
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/zwaan_2012_bnaic_b.bib.txt))
+
+## 2011
+
+* [Empathic Virtual Buddy: Setting Up Informed Empathic Responses](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.713.7126&rep=rep1&type=pdf),
+by Janneke van der Zwaan, Virginia Dignum, Joost Broekens, and Catholijn Jonker.
+In: _Proceedings of the 15th Portuguese Conference on Artificial Intelligence_, 2011, pages 1-15.
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/zwaan2011.bib.txt))
+
+## 2010
+
+* [Simulating Peer Support for Victims of Cyberbullying](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.724.2423&rep=rep1&type=pdf),
+by Janneke van der Zwaan, Virginia Dignum, and Catholijn Jonker.
+In: _BNAIC 2010: 22rd Benelux Conference on Artificial Intelligence_, 2010.
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/zwaan_bnaic_2010.bib.txt))
+
 ## 2007
 
 * [An experiment in automatic classification of pathological reports](https://ifarm.nl/erikt/papers/aime2007.pdf),
