@@ -1,0 +1,15 @@
+@InProceedings{10.1007/978-3-540-73599-1_28,
+author="van der Zwaan, Janneke
+and Tjong Kim Sang, Erik
+and de Rijke, Maarten",
+editor="Bellazzi, Riccardo
+and Abu-Hanna, Ameen
+and Hunter, Jim",
+title="An Experiment in Automatic Classification of Pathological Reports",
+booktitle="Artificial Intelligence in Medicine",
+year="2007",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="207--216",
+isbn="978-3-540-73599-1"
+}

@@ -1,37 +1,3 @@
-## Welcome to GitHub Pages
+## 2007
 
-You can use the [editor on GitHub](https://github.com/jvdzwaan/jvdzwaan.github.io/edit/master/index.md) to maintain and preview the content for your website in Markdown files.
-
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
-
-### Markdown
-
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/jvdzwaan/jvdzwaan.github.io/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+* [An experiment in automatic classification of pathological reports](https://ifarm.nl/erikt/papers/aime2007.pdf), by Janneke van der Zwaan, Erik Tjong Kim Sang, and Maarten de Rijke. In: _Conference on Artificial Intelligence in Medicine in Europe (AIME)_, 2007, pages 207-216. DOI: [10.1007/978-3-540-73599-1_28](https://doi.org/10.1007/978-3-540-73599-1_28) ([bibtex](bib/zwaan_2207.bib.txt))
