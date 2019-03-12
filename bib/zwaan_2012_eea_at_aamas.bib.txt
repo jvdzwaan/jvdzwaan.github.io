@@ -1,0 +1,5 @@
+@inproceedings{zwaan_2012_eea_at_aamas,
+	Author = {{J.M. van der} Zwaan and V. Dignum and C.M. Jonker},
+	Booktitle = {Proceedings of the 3rd Workshop on Emotional and Empathic Agents @ AAMAS 2012},
+	Title = {A BDI Dialogue Agent for Social Support: Specification and Evaluation Method},
+	Year = {2012}}

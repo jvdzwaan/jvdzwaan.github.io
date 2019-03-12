@@ -1,0 +1,6 @@
+@inproceedings{zwaan_2013_aamas_demo,
+	Author = {{J.M. van der} Zwaan and V. Dignum},
+	Booktitle = {Proceedings of the 12th International Conference on Autonomous Agents and Multiagent Systems (AAMAS 2013)},
+	Editor = {Ito and Jonker and Gini and Shehory},
+	Title = {Robin, an Empathic Virtual Buddy for Social Support},
+	Year = {2013}}

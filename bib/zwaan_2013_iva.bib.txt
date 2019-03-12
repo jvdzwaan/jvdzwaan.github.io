@@ -1,0 +1,7 @@
+@inproceedings{zwaan_2013_iva,
+	Author = {{J.M. van der} Zwaan and V. Dignum and C.M. Jonker},
+	Booktitle = {Intelligent Virtual Agents},
+	Editor = {R. Aylett and B. Krenn and C. Pelachaud and H. Shimodaira},
+	Publisher = {Springer},
+	Title = {A Qualitative Evaluation of Social Support by an Empathic Agent},
+	Year = {2013}}

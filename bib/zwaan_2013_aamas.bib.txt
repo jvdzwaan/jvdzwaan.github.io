@@ -1,0 +1,6 @@
+@inproceedings{zwaan_2013_aamas,
+	Author = {{J.M. van der} Zwaan and Dignum, V.},
+	Booktitle = {Proceedings of the 12th International Conference on Autonomous Agents and Multiagent Systems (AAMAS 2013)},
+	Editor = {Ito and Jonker and Gini and Shehory},
+	Title = {Do Underlying Attitudes Affect Users' Subjective Experiences? The Case of an Empathic Agent},
+	Year = {2013}}

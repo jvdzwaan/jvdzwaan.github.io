@@ -1,0 +1,6 @@
+@inproceedings{zwaan_bnaic_2010,
+	Author = {{J.M. van der} Zwaan and Dignum, V. and Jonker, C.M.},
+	Booktitle = {Proceedings of the 22st Benelux Conference on Artificial Intelligence (BNAIC 2010)},
+	Issn = {1568-7805},
+	Title = {Simulating Peer Support for Victims of Cyberbullying},
+	Year = {2010}}
