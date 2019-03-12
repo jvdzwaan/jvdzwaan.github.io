@@ -1,5 +1,5 @@
 @incollection{zwaan_2013_ribook,
-	Author = {{J.M. van der} Zwaan and V. Dignum and C.M. Jonker},
+	Author = {{J.M. van der} Zwaan and V. Dignum and C.M. Jonker, {S. van 't} Hof},
 	Booktitle = {Responsible Innovation Volume 1: Innovative Solutions for Global Issues},
 	Editor = {{J. van den} Hoven, B. Koops, H. Romijn, T. Swierstra and N. Doorn},
 	Title = {On Technology against Cyberbullying},
