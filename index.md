@@ -18,7 +18,7 @@ In: _Proceedings of the 12th International Conference on Autonomous Agents and M
 by Janneke van der Zwaan, Virginia Dignum, and Catholijn Jonker.
 In: _Proceedings of the 12th International Conference on Autonomous Agents and Multiagent Systems (AAMAS 2013)_, 2013, pages 1413-1414.
 ([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/zwaan_2013_aamas_demo.bib.txt))
-* [The Effect of Variations in Emotional Expressiveness on Social Support](https://github.com/jvdzwaan/jvdzwaan.github.io/blob/master/pdf/Zwaan_et_al_effect_of_emotional_expressiveness.pdf),
+* [The Effect of Variations in Emotional Expressiveness on Social Support](jvdzwaan.github.io/pdf/Zwaan_et_al_effect_of_emotional_expressiveness.pdf),
 by Janneke van der Zwaan, Virginia Dignum, and Catholijn Jonker.
 In: _Proceedings of the 2013 Workshop on Computers as Social Actors_, 2013, pages 9-20.
 ([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/zwaan_2013_casa.bib.txt))
