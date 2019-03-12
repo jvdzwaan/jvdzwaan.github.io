@@ -1,0 +1,7 @@
+@inproceedings{zwaan_2013_casa,
+  title={The effect of variations in emotional expressiveness on social support},
+  author={van der Zwaan, Janneke M and Dignum, Virginia and Jonker, Catholijn M},
+  booktitle={Proceedings of the 2013 Workshop on Computers as Social Actors},
+  pages={9--20},
+  year={2013}
+}
