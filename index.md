@@ -1,3 +1,11 @@
+## 2015
+
+* [HEEM, a Complex Model for Mining Emotions in Historical Text](jvdzwaan.github.io/pdf/van_der_zwaan_heem_2015.pdf),
+by Janneke van der Zwaan, Inger Leemans, Erika Kuijpers, and Isa Maks.
+In: _2015 IEEE 11th International Conference on e-Science_, 2015, pages 22-30.
+DOI: [10.1109/eScience.2015.18](https://doi.org/10.1109/eScience.2015.18)
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/van_der_zwaan_heem_2015.bib.txt))
+
 ## 2013
 
 * A Qualitative Evaluation of Social Support by an Empathic Agent,
