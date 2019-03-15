@@ -6,7 +6,7 @@ In: _Intelligent Virtual Agents_, 2013, pages 358-367.
 DOI: [10.1007/978-3-642-40415-3_32](https://doi.org/10.1007/978-3-642-40415-3_32)
 ([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/zwaan_2013_iva.bib.txt))
 * On Technology Against Cyberbullying,
-by Janneke van der Zwaan, Virginia Dignum, Catholijn Jonker, and Simone van 't Hof.
+by Janneke van der Zwaan, Virginia Dignum, Catholijn Jonker, and Simone van der Hof.
 In: _Responsible Innovation Volume 1: Innovative Solutions for Global Issues_, 2013, pages 369-392.
 DOI: [10.1007/978-94-017-8956-1_21](https://doi.org/10.1007/978-94-017-8956-1_21)
 ([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/zwaan_2013_ribook.bib.txt))
