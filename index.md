@@ -1,3 +1,55 @@
+## 2018
+
+* [Ochre, a Toolbox for OCR Post-Correction](https://doi.org/10.5281/zenodo.1189244) (poster)
+by Janneke van der Zwaan and Lotte Wilms.
+In: _Computational Linguistics in the Netherlands_, CLIN28, Nijmegen, 2018.
+DOI: [10.5281/zenodo.1189244](https://doi.org/10.5281/zenodo.1189244)
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/zwaan_ochre_2018.bib.txt))
+* [Bridging the gap: Digital Humanities and the Arabic-Islamic corpus](https://dh2018.adho.org/en/bridging-the-gap-digital-humanities-and-the-arabic-islamic-corpus/) (abstract) ([poster](https://doi.org/10.5281/zenodo.1299523))
+by Dafne van Kuppevelt, Patrick Bos, Melle Lyklema, Umar Ryad, Christian Lange, and Janneke van der Zwaan.
+In: _Digital Humanities_, 2018.
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/van_kuppevelt_bridging_2018.bib.txt))
+
+## 2017
+
+* [Flexible NLP Pipelines for Digital Humanities Research](https://dh2017.adho.org/abstracts/215/215.pdf) (abstract)
+by Janneke van der Zwaan, Wouter Smink, Anneke Sools, Gerben Westerhof, Bernard Veldkamp, and Sytske Wiegersma.
+In: _Digital Humanities_, 2017.
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/zwaan_dh_2017.bib.txt))
+* [Mining Embodied Emotions: a Comparative Analysis of Sentiment and Emotion in Dutch Texts, 1600-1800](www.digitalhumanities.org/dhq/vol/11/4/000343/000343.html),
+by Inger Leemans, Janneke van der Zwaan, Isa Maks, Erika Kuijpers, and Kristine Steenbergh.
+In: _Digital Humanities Quarterly_, 11.4, 2017.
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/leemans_mining_2017.bib.txt))
+* [Storyteller: Visual Analytics of Perspectives on Rich Text Interpretations](http://www.aclweb.org/anthology/W17-4207)
+by Maarten van Meersbergen, Janneke van der Zwaan, Willem van Hage, Piek Vossen, Antske Fokkens, Inger Leemans, and Isa Maks.
+In: _Proceedings of the 2017 EMNLP Workshop: Natural Language Processing meets Journalism_, 2017, pages 37-45.
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/meersbergen_storyteller_2017.bib.txt))
+
+## 2016
+
+* [Validating Cross-perspective Topic Modeling for Extracting Political Parties' Positions from Parliamentary Proceedings](jvdzwaan.github.io/pdf/van_der_zwaan_validating_2016.pdf)
+by Janeke van der Zwaan, Maarten Marx, and Jaap Kamps.
+In: _Proceedings of the Twenty-second European Conference on Artificial Intelligence (ECAI)_, 2016, pages 28-36.
+DOI: [10.3233/978-1-61499-672-9-28](https://doi.org/10.3233/978-1-61499-672-9-28)
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/van_der_zwaan_validating_2016.bib.txt))
+* [Storyteller: Visualizing Perspectives in Digital Humanities Projects](jvdzwaan.github.io/pdf/zwaan_storyteller_2016.pdf)
+by Janneke van der Zwaan, Maarten van Meersbergen, Antske Fokkens, Serge ter Braake, Inger Leemans, Erika Kuipers, Piek Vossen, and Isa Maks.
+In: _Computational History and Data-Driven Humanities_, 2016, pages 78-90.
+DOI: [10.1007/978-3-319-46224-0_8](https://doi.org/10.1007/978-3-319-46224-0_8)
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/zwaan_storyteller_2016.bib.txt))
+* [Topic Coherence for Dutch](jvdzwaan.github.io/pdf/zwaan_dhbenelux_2016.pdf) (abstract)
+by Janneke van der Zwaan, Maarten Marx, and Jaap Kamps.
+In: _DHBenelux_, 2016.
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/zwaan_dhbenelux_2016.bib.txt))
+
+## 2015
+
+* [HEEM, a Complex Model for Mining Emotions in Historical Text](jvdzwaan.github.io/pdf/van_der_zwaan_heem_2015.pdf),
+by Janneke van der Zwaan, Inger Leemans, Erika Kuijpers, and Isa Maks.
+In: _2015 IEEE 11th International Conference on e-Science_, 2015, pages 22-30.
+DOI: [10.1109/eScience.2015.18](https://doi.org/10.1109/eScience.2015.18)
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/van_der_zwaan_heem_2015.bib.txt))
+
 ## 2013
 
 * A Qualitative Evaluation of Social Support by an Empathic Agent,
