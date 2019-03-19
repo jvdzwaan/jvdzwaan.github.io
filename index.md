@@ -5,7 +5,7 @@ by Janneke van der Zwaan and Lotte Wilms.
 In: _Computational Linguistics in the Netherlands_, CLIN28, Nijmegen, 2018.
 DOI: [10.5281/zenodo.1189244](https://doi.org/10.5281/zenodo.1189244)
 ([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/zwaan_ochre_2018.bib.txt))
-* [Bridging the gap: Digital Humanities and the Arabic-Islamic corpus](https://dh2018.adho.org/en/bridging-the-gap-digital-humanities-and-the-arabic-islamic-corpus/) (abstract) ([poster]())
+* [Bridging the gap: Digital Humanities and the Arabic-Islamic corpus](https://dh2018.adho.org/en/bridging-the-gap-digital-humanities-and-the-arabic-islamic-corpus/) (abstract) ([poster](https://doi.org/10.5281/zenodo.1299523))
 by Dafne van Kuppevelt, Patrick Bos, Melle Lyklema, Umar Ryad, Christian Lange, and Janneke van der Zwaan.
 In: _Digital Humanities_, 2018.
 ([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/van_kuppevelt_bridging_2018.bib.txt))
@@ -19,7 +19,7 @@ In: _Digital Humanities_, 2017.
 * [Mining Embodied Emotions: a Comparative Analysis of Sentiment and Emotion in Dutch Texts, 1600-1800](www.digitalhumanities.org/dhq/vol/11/4/000343/000343.html),
 by Inger Leemans, Janneke van der Zwaan, Isa Maks, Erika Kuijpers, and Kristine Steenbergh.
 In: _Digital Humanities Quarterly_, 11.4, 2017.
-([bibtex]((https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/leemans_mining_2017.bib.txt))
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/leemans_mining_2017.bib.txt))
 * [Storyteller: Visual Analytics of Perspectives on Rich Text Interpretations](http://www.aclweb.org/anthology/W17-4207)
 by Maarten van Meersbergen, Janneke van der Zwaan, Willem van Hage, Piek Vossen, Antske Fokkens, Inger Leemans, and Isa Maks.
 In: _Proceedings of the 2017 EMNLP Workshop: Natural Language Processing meets Journalism_, 2017, pages 37-45.
