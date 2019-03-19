@@ -1,0 +1,9 @@
+@article{leemans_mining_2017,
+	title = {Mining {Embodied} {Emotions}: a {Comparative} {Analysis} of {Sentiment} and {Emotion} in {Dutch} {Texts}, 1600-1800},
+	volume = {11},
+	url = {http://www.digitalhumanities.org/dhq/vol/11/4/000343/000343.html},
+	number = {4},
+	journal = {Digital Humanities Quarterly},
+	author = {Leemans, Inger and Zwaan, {Janneke van der} and Maks, Isa and Kuijpers, Erika and Steenbergh, Kristine},
+	year = {2017},
+}

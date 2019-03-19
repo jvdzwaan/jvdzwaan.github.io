@@ -1,3 +1,18 @@
+## 2017
+
+* [Flexible NLP Pipelines for Digital Humanities Research](https://dh2017.adho.org/abstracts/215/215.pdf) (abstract)
+by Janneke van der Zwaan, Wouter Smink, Anneke Sools, Gerben Westerhof, Bernard Veldkamp, and Sytske Wiegersma.
+In: _Digital Humanities_, 2017.
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/zwaan_dh_2017.bib.txt))
+* [Mining Embodied Emotions: a Comparative Analysis of Sentiment and Emotion in Dutch Texts, 1600-1800](www.digitalhumanities.org/dhq/vol/11/4/000343/000343.html),
+by Inger Leemans, Janneke van der Zwaan, Isa Maks, Erika Kuijpers, and Kristine Steenbergh.
+In: _Digital Humanities Quarterly_, 11.4, 2017.
+([bibtex]((https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/leemans_mining_2017.bib.txt))
+* [Storyteller: Visual Analytics of Perspectives on Rich Text Interpretations](http://www.aclweb.org/anthology/W17-4207)
+by Maarten van Meersbergen, Janneke van der Zwaan, Willem van Hage, Piek Vossen, Antske Fokkens, Inger Leemans, and Isa Maks.
+In: _Proceedings of the 2017 EMNLP Workshop: Natural Language Processing meets Journalism_, 2017, pages 37-45.
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/meersbergen_storyteller_2017.bib.txt))
+
 ## 2015
 
 * [HEEM, a Complex Model for Mining Emotions in Historical Text](jvdzwaan.github.io/pdf/van_der_zwaan_heem_2015.pdf),
