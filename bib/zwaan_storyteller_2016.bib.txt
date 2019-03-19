@@ -1,0 +1,13 @@
+@inproceedings{zwaan_storyteller_2016,
+	title = {Storyteller: {Visualizing} {Perspectives} in {Digital} {Humanities} {Projects}},
+	volume = {482},
+	isbn = {978-3-319-46223-3 978-3-319-46224-0},
+	url = {http://link.springer.com/10.1007/978-3-319-46224-0_8},
+	booktitle = {Computational {History} and {Data}-{Driven} {Humanities}},
+	publisher = {Springer International Publishing},
+	author = {van der Zwaan, Janneke M. and van Meersbergen, Maarten and Fokkens, Antske and ter Braake, Serge and Leemans, Inger and Kuijpers, Erika and Vossen, Piek and Maks, Isa},
+	editor = {Bozic, Bojan and Mendel-Gleason, Gavin and Debruyne, Christophe and O'Sullivan, Declan},
+	year = {2016},
+	doi = {10.1007/978-3-319-46224-0_8},
+	pages = {78--90}
+}

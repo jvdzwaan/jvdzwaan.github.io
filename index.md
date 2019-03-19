@@ -13,6 +13,23 @@ by Maarten van Meersbergen, Janneke van der Zwaan, Willem van Hage, Piek Vossen,
 In: _Proceedings of the 2017 EMNLP Workshop: Natural Language Processing meets Journalism_, 2017, pages 37-45.
 ([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/meersbergen_storyteller_2017.bib.txt))
 
+## 2016
+
+* [Validating Cross-perspective Topic Modeling for Extracting Political Parties' Positions from Parliamentary Proceedings](jvdzwaan.github.io/pdf/van_der_zwaan_validating_2016.pdf)
+by Janeke van der Zwaan, Maarten Marx, and Jaap Kamps.
+In: _Proceedings of the Twenty-second European Conference on Artificial Intelligence (ECAI)_, 2016, pages 28-36.
+DOI: [10.3233/978-1-61499-672-9-28](https://doi.org/10.3233/978-1-61499-672-9-28)
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/van_der_zwaan_validating_2016.bib.txt))
+* [Storyteller: Visualizing Perspectives in Digital Humanities Projects](jvdzwaan.github.io/pdf/zwaan_storyteller_2016.pdf)
+by Janneke van der Zwaan, Maarten van Meersbergen, Antske Fokkens, Serge ter Braake, Inger Leemans, Erika Kuipers, Piek Vossen, and Isa Maks.
+In: _Computational History and Data-Driven Humanities_, 2016, pages 78-90.
+DOI: [10.1007/978-3-319-46224-0_8](https://doi.org/10.1007/978-3-319-46224-0_8)
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/zwaan_storyteller_2016.bib.txt))
+* [Topic Coherence for Dutch](jvdzwaan.github.io/pdf/zwaan_dhbenelux_2016.pdf) (abstract)
+by Janneke van der Zwaan, Maarten Marx, and Jaap Kamps.
+In: _DHBenelux_, 2016.
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/zwaan_dhbenelux_2016.bib.txt))
+
 ## 2015
 
 * [HEEM, a Complex Model for Mining Emotions in Historical Text](jvdzwaan.github.io/pdf/van_der_zwaan_heem_2015.pdf),
