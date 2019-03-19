@@ -1,3 +1,15 @@
+## 2018
+
+* [Ochre, a Toolbox for OCR Post-Correction](https://doi.org/10.5281/zenodo.1189244) (poster)
+by Janneke van der Zwaan and Lotte Wilms.
+In: _Computational Linguistics in the Netherlands_, CLIN28, Nijmegen, 2018.
+DOI: [10.5281/zenodo.1189244](https://doi.org/10.5281/zenodo.1189244)
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/zwaan_ochre_2018.bib.txt))
+* [Bridging the gap: Digital Humanities and the Arabic-Islamic corpus](https://dh2018.adho.org/en/bridging-the-gap-digital-humanities-and-the-arabic-islamic-corpus/) (abstract) ([poster]())
+by Dafne van Kuppevelt, Patrick Bos, Melle Lyklema, Umar Ryad, Christian Lange, and Janneke van der Zwaan.
+In: _Digital Humanities_, 2018.
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/van_kuppevelt_bridging_2018.bib.txt))
+
 ## 2017
 
 * [Flexible NLP Pipelines for Digital Humanities Research](https://dh2017.adho.org/abstracts/215/215.pdf) (abstract)

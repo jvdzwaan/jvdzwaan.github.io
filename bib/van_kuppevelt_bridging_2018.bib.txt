@@ -1,0 +1,6 @@
+@INPROCEEDINGS{van_kuppevelt_bridging_2018,
+	author = {van Kuppevelt, Dafne and Bos, Patrick and Lyklema, Melle and Lange, Christian and Ryad, Umar and van der Zwaan, Janneke},
+	title = {Bridging the gap: Digital Humanities and the Arabic-Islamic corpus},
+	booktitle = "Digital Humanities",
+	year = "2017",
+}
