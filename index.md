@@ -1,3 +1,11 @@
+## 2019
+
+* [Are you sure your tool does what it is supposed to do? Validating Arabic root extraction](https://academic.oup.com/dsh/advance-article/doi/10.1093/llc/fqz045/5545478)
+by Janneke van der Zwaan,  Maksim Abdul Latif,  Dafne van Kuppevelt,  Melle Lyklema, and Christian Lange.
+In: _Digital Scholarship in the Humanities_, 2019
+DOI: [10.1093/llc/fqz045](https://academic.oup.com/dsh/advance-article/doi/10.1093/llc/fqz045/5545478)
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/van_der_zwaan_dsh_2019.bib.txt))
+
 ## 2018
 
 * [Ochre, a Toolbox for OCR Post-Correction](https://doi.org/10.5281/zenodo.1189244) (poster)
