@@ -2,4 +2,5 @@
 	title = {Topic Coherence for Dutch},
 	booktitle = {DHBenelux},
 	author = {van der Zwaan, Janneke M. and Marx, Maarten and Kamps, Jaap},
+	year = {2016},
 }
