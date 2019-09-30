@@ -9,6 +9,10 @@ DOI: [10.1093/llc/fqz045](https://academic.oup.com/dsh/advance-article/doi/10.10
 by Martin Reynaert, Patrick Bos, and Janneke van der Zwaan.
 In: _DHBenelux_, 2019.
 ([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/reynaert_dhbenelux_2019.bib.txt))
+* [Granularity versus Dispersion in the Dutch Diachronical Database of Lexical Frequencies TICCLAT](jvdzwaan.github.io/pdf/Reynaert_CLARIN_2019.pdf) (poster)
+by Martin Reynaert, Patrick Bos, and Janneke van der Zwaan.
+In: _CLARIN Annual Conference_, 2019.
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/))
 
 ## 2018
 
