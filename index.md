@@ -5,6 +5,10 @@ by Janneke van der Zwaan,  Maksim Abdul Latif,  Dafne van Kuppevelt,  Melle Lykl
 In: _Digital Scholarship in the Humanities_, 2019
 DOI: [10.1093/llc/fqz045](https://academic.oup.com/dsh/advance-article/doi/10.1093/llc/fqz045/5545478)
 ([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/van_der_zwaan_dsh_2019.bib.txt))
+* [TICCLAT: a Dutch diachronical database of linked word-variants](jvdzwaan.github.io/pdf/DH_Benelux_2019_paper_46.pdf) (abstract)
+by Martin Reynaert, Patrick Bos, and Janneke van der Zwaan.
+In: _DHBenelux_, 2019.
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/reynaert_dhbenelux_2019.bib.txt))
 
 ## 2018
 
