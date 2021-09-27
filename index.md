@@ -3,6 +3,7 @@
 * [Text Mining Islamic Law](https://brill.com/view/journals/ils/28/3/article-p234_234.xml)
 by Christian Lange, Maksim Abdul Latif, Yusuf Çelik, A. Melle Lyklema, Dafne E. van Kuppevelt, and Janneke van der Zwaan.
 In: _Islamic Law and Society_, 28, pages 234-281, 2021.
+DOI: [10.1163/15685195-bja10009](https://brill.com/view/journals/ils/28/3/article-p234_234.xml)
 ([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/lange_et_al_2021.bib.txt))
 
 ## 2019
