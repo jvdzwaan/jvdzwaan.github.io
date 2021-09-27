@@ -1,0 +1,13 @@
+@article { TextMiningIslamicLaw,
+      author = "Christian Lange and Maksim Abdul Latif and Yusuf Çelik and A. Melle Lyklema and Dafne E. van Kuppevelt and Janneke van der Zwaan",
+      title = "Text Mining Islamic Law",
+      journal = "Islamic Law and Society",
+      year = "2021",
+      publisher = "Brill",
+      address = "Leiden, The Netherlands",
+      volume = "28",
+      number = "3",
+      doi = "https://doi.org/10.1163/15685195-bja10009",
+      pages=      "234 - 281",
+      url = "https://brill.com/view/journals/ils/28/3/article-p234_234.xml"
+}
