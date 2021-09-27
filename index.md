@@ -1,3 +1,7 @@
+# Publications
+
+Publications by Janneke van der Zwaan.
+
 ## 2021
 
 * [Text Mining Islamic Law](https://brill.com/view/journals/ils/28/3/article-p234_234.xml)
