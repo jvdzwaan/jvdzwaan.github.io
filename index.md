@@ -13,6 +13,11 @@ by Janneke van der Zwaan,  Maksim Abdul Latif,  Dafne van Kuppevelt,  Melle Lykl
 In: _Digital Scholarship in the Humanities_, 36, supplement 1, 2021.
 DOI: [10.1093/llc/fqz045](https://academic.oup.com/dsh/advance-article/doi/10.1093/llc/fqz045/5545478)
 ([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/van_der_zwaan_dsh_2019.bib.txt))
+* [Towards text mining therapeutic change: A systematic review of text-based methods for Therapeutic Change Process Research](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0225703)
+by Wouter Smink, Anneke Sools, Janneke van der Zwaan, Sytse Wiegersma, Bernard Veldkamp, and Gerben Westerhof.
+In: _PLOS ONE_, 14, pages 1-21, 2019.
+DOI: [10.1371/journal.pone.0225703](https://doi.org/10.1371/journal.pone.0225703)
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/smink_et_al_2019.bib.txt))
 * [TICCLAT: a Dutch diachronical database of linked word-variants](jvdzwaan.github.io/pdf/DH_Benelux_2019_paper_46.pdf) (abstract)
 by Martin Reynaert, Patrick Bos, and Janneke van der Zwaan.
 In: _DHBenelux_, 2019.
