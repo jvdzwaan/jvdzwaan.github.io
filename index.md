@@ -83,6 +83,13 @@ In: _2015 IEEE 11th International Conference on e-Science_, 2015, pages 22-30.
 DOI: [10.1109/eScience.2015.18](https://doi.org/10.1109/eScience.2015.18)
 ([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/van_der_zwaan_heem_2015.bib.txt))
 
+## 2014
+
+* [An empathic virtual buddy for social support](https://www.narcis.nl/publication/RecordID/oai:tudelft.nl:uuid%3Af32371b2-82cc-414e-9569-2d56b12a530a),
+by Janneke van der Zwaan. PhD thesis, 2014.
+DOI: [10.4233/uuid:f32371b2-82cc-414e-9569-2d56b12a530a](https://doi.org/10.4233/uuid:f32371b2-82cc-414e-9569-2d56b12a530a)
+([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/zwaan_phd_thesis_2014.bib.txt))
+
 ## 2013
 
 * A Qualitative Evaluation of Social Support by an Empathic Agent,

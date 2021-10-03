@@ -1,0 +1,9 @@
+@phdthesis{zwaan_phd_thesis_2014,
+title = "An empathic virtual buddy for social support",
+author = "{van der Zwaan}, JM",
+year = "2014",
+doi = "10.4233/uuid:f32371b2-82cc-414e-9569-2d56b12a530a",
+language = "English",
+isbn = "978-94-6186-279-2",
+school = "Delft University of Technology",
+}
