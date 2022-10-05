@@ -1,4 +1,6 @@
-# Publications
+---
+title: "Publications"
+---
 
 Publications by Janneke van der Zwaan.
 
