@@ -1,19 +1,25 @@
 ---
 title: "About"
-image: profile.jpg
+image: Janneke_arty.jpg
 about:
-  template: jolla
+  template: solana
+  image-shape: round
   links:
     - icon: twitter
       text: Twitter
-      href: https://twitter.com
+      href: https://twitter.com/jvdzwa
     - icon: linkedin
       text: LinkedIn
-      href: https://linkedin.com
+      href: https://www.linkedin.com/in/jvdzwaan/
     - icon: github
       text: Github
-      href: https://github.com
+      href: https://github.com/jvdzwaan
 
 ---
 
-About this blog
+Hello, my name is Janneke. I have a background in Artificial Intelligence. My
+main interest is Natural Language Processing. On this blog, I write about my
+hobby projects.
+
+In a previous life, I worked in academia. You can find my publications
+[here](publications.qmd).
