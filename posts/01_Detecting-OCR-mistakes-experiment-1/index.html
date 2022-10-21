@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.1.251">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2022-10-21">
+
+<title>Janneke van der Zwaan - Detecting OCR mistakes in text using BERT for token classification</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Janneke van der Zwaan</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">About</a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jvdzwaan"><i class="bi bi-github" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/jvdzwa"><i class="bi bi-twitter" role="img">
+</i> 
+ </a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Detecting OCR mistakes in text using BERT for token classification</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">ocr post-correction</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">October 21, 2022</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<p>Some years ago, I did a <a href="https://lab.kb.nl/about-us/blog/newspaper-ocr-quality-what-have-we-learned">project with the Dutch National Library on OCR post-correction</a>. I wanted to investigate the potential of Deep Learning for correcting OCR errors in text. For various reasons, <a href="https://docs.google.com/document/d/1ui1wFNwIcnTn5gLvDL8JnM7epsod1uVAZNo31Zg_YuM/edit">we never got very good results</a>. Around the same time, two <a href="https://sites.google.com/view/icdar2019-postcorrectionocr">competitions on post-OCR text correction</a> were organized at the ICDAR conference (<a href="https://sites.google.com/view/icdar2017-postcorrectionocr">2017</a> and <a href="https://sites.google.com/view/icdar2019-postcorrectionocr">2019</a>). I remained interested in the problem and started working on reproducing the competition results in my free time.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="http://hdl.handle.net/10934/RM0001.COLLECT.247881"><img src="woman_with_newspaper.png" class="img-fluid figure-img"></a></p>
+<p></p><figcaption class="figure-caption">Interior with a woman reading the newspaper, by Gerke Henkes (1854 - 1927)</figcaption><p></p>
+</figure>
+</div>
+<p>The competition divided the challenge of OCR post-correction into two tasks:</p>
+<ol type="1">
+<li>Detection</li>
+<li>Correction</li>
+</ol>
+<p>This post is about my first experiences with solving the detection task. The <a href="https://ieeexplore.ieee.org/abstract/document/8978127">paper about the results</a> contains very brief descriptions of the competitors’ solutions, which makes it hard to reproduce their models. The paper states that the winner used multilingual BERT with CNN layers for recognizing tokens with OCR mistakes. For simplicity, I decided to start with training a simpler BERT for token classification model.</p>
+<section id="the-data" class="level2">
+<h2 class="anchored" data-anchor-id="the-data">The data</h2>
+<p>The <a href="https://sites.google.com/view/icdar2019-postcorrectionocr/dataset">competition dataset</a> consists of (historical) newspaper data in 10 languages. Each text file contains three lines, e.g.,</p>
+<pre><code>[OCR_toInput] This is a cxample...
+[OCR_aligned] This is a@ cxample...
+[ GS_aligned] This is an example.@@</code></pre>
+<p>The first line contains the ocr input text. The second line contains the aligned ocr and the third line contains the aligned gold standard (GS). <code>@</code> is the aligment character and <code>#</code> represents tokens in the OCR that do not occur in the gold standard (noise).</p>
+<p>Task 1 of the competition is about finding tokens with OCR mistakes. In this context, a token refers to a string between two whitespaces. The goal of this task is to predict the position and length of OCR mistakes. I created a Python library called <a href="https://github.com/jvdzwaan/ocrpostcorrection">ocrpostcorrection</a> that contains functionality for doing OCR postcorrection, including converting the ICDAR dataset into a Hugging Face dataset with ‘sentences’ of a certain length. This <a href="https://github.com/jvdzwaan/ocrpostcorrection-notebooks/blob/main/local/icdar-create-hf-dataset.ipynb">notebook</a> contains the code used to create the dataset. I will now explain the most important steps.</p>
+<p>First, a text is divided into aligned tokens by splitting the aligned OCR and GS on matching whitespaces. The ocrpostcorrection library contains a <a href="https://docs.python.org/3/library/dataclasses.html">dataclass</a> <a href="https://jvdzwaan.github.io/ocrpostcorrection/icdar_data.html#alignedtoken"><code>AlignedToken</code></a> which is used to store the results:</p>
+<div class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataclasses <span class="im">import</span> dataclass</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> AlignedToken:</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    ocr: <span class="bu">str</span>  <span class="co"># String in the OCR text (excluding aligmnent characters)</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    gs: <span class="bu">str</span>  <span class="co"># String in the gold standard (excluding aligmnent characters)</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    ocr_aligned: <span class="bu">str</span>  <span class="co"># String in the aligned OCR text (including aligmnent characters)</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    gs_aligned: <span class="bu">str</span>  <span class="co"># String in the aligned GS text (including aligmnent characters)</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    start: <span class="bu">int</span>  <span class="co"># The index of the first character in the OCR text</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    len_ocr: <span class="bu">int</span>  <span class="co"># The lentgh of the OCR string</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The <a href="tokenize_aligned">tokenize_aligned</a> function is used to divide an input text into <code>AlignedToken</code>s.</p>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ocrpostcorrection.icdar_data <span class="im">import</span> tokenize_aligned</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>tokenize_aligned(<span class="st">'This is a@ cxample...'</span>, <span class="st">'This is an example.@@'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="72">
+<pre><code>[AlignedToken(ocr='This', gs='This', ocr_aligned='This', gs_aligned='This', start=0, len_ocr=4),
+ AlignedToken(ocr='is', gs='is', ocr_aligned='is', gs_aligned='is', start=5, len_ocr=2),
+ AlignedToken(ocr='a', gs='an', ocr_aligned='a@', gs_aligned='an', start=8, len_ocr=1),
+ AlignedToken(ocr='cxample...', gs='example.', ocr_aligned='cxample...', gs_aligned='example.@@', start=10, len_ocr=10)]</code></pre>
+</div>
+</div>
+<p>The OCR text of an <code>AlignedToken</code> may still consist of multiple tokens. This is the case when the OCR text contains one or more spaces. To make sure the (sub)tokenization of a token is the same, no matter if it was not yet tokenized completely, another round of tokenization is added. Using the <a href="https://jvdzwaan.github.io/ocrpostcorrection/icdar_data.html#get_input_tokens">get_input_tokens</a> function, every <code>AlignedToken</code> is split on whitespace. Each subtoken is stored in the <code>InputToken</code> dataclass:</p>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataclasses <span class="im">import</span> dataclass</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> InputToken:</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    ocr: <span class="bu">str</span>  <span class="co"># OCR text</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    gs: <span class="bu">str</span>  <span class="co"># GS text</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    start: <span class="bu">int</span>  <span class="co"># character offset in the original OCR text</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    len_ocr: <span class="bu">int</span>  <span class="co"># length of the OCR text</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    label: <span class="bu">int</span>  <span class="co"># Class label: [0, 1, 2]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This dataclass also adds the class labels. There are three classes:</p>
+<ul>
+<li>0: No OCR mistake</li>
+<li>1: Start token of an OCR mistake</li>
+<li>2: Inside token of an OCR mistake</li>
+</ul>
+<p>This example code shows how an <code>AlignedToken</code> is divided into <code>inputToken</code>s:</p>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ocrpostcorrection.icdar_data <span class="im">import</span> AlignedToken, get_input_tokens</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> AlignedToken(<span class="st">'Long ow.'</span>, <span class="st">'Longhow.'</span>, <span class="st">'Long ow.'</span>, <span class="st">'Longhow.'</span>, <span class="dv">24</span>, <span class="dv">8</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(t)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> inp_tok <span class="kw">in</span> get_input_tokens(t):</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(inp_tok)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>AlignedToken(ocr='Long ow.', gs='Longhow.', ocr_aligned='Long ow.', gs_aligned='Longhow.', start=24, len_ocr=8)
+InputToken(ocr='Long', gs='Longhow.', start=24, len_ocr=4, label=1)
+InputToken(ocr='ow.', gs='', start=29, len_ocr=3, label=2)</code></pre>
+</div>
+</div>
+<p>The output produced by this code is:</p>
+<pre><code>AlignedToken(ocr='Long ow.', gs='Longhow.', ocr_aligned='Long ow.', gs_aligned='Longhow.', start=24, len_ocr=8)
+InputToken(ocr='Long', gs='Longhow.', start=24, len_ocr=4, label=1)
+InputToken(ocr='ow.', gs='', start=29, len_ocr=3, label=2)</code></pre>
+<p>A text can be tokenized by combining the <code>tokenize_aligned</code> and <code>get_input_tokens</code> functions. Texts are stored in another dataclass:</p>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataclasses <span class="im">import</span> dataclass</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Text:</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    ocr_text: <span class="bu">str</span>  <span class="co"># OCR input text</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    tokens: <span class="bu">list</span>  <span class="co"># List of AlignedTokens</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    input_tokens: <span class="bu">list</span>  <span class="co"># List of InputTokens</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    score: <span class="bu">float</span>  <span class="co"># Normalized editdistance between OCR and GS text</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>A text file can be tokenized using the function <a href="https://jvdzwaan.github.io/ocrpostcorrection/icdar_data.html#process_text">process_text</a>:</p>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ocrpostcorrection.icdar_data <span class="im">import</span> process_text</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>in_file <span class="op">=</span> Path(<span class="st">'example.txt'</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> process_text(in_file)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>which results in the following instance of the <code>Text</code> dataclass:</p>
+<pre><code>Text(ocr_text='This is a cxample...',
+     tokens=[AlignedToken(ocr='This', gs='This', ocr_aligned='This', gs_aligned='This', start=0, len_ocr=4),
+             AlignedToken(ocr='is', gs='is', ocr_aligned='is', gs_aligned='is', start=5, len_ocr=2),
+             AlignedToken(ocr='a', gs='an', ocr_aligned='a@', gs_aligned='an', start=8, len_ocr=1),
+             AlignedToken(ocr='cxample...', gs='example.', ocr_aligned='cxample...', gs_aligned='example.@@', start=10, len_ocr=10)],
+     input_tokens=[InputToken(ocr='This', gs='This', start=0, len_ocr=4, label=0),
+                   InputToken(ocr='is', gs='is', start=5, len_ocr=2, label=0),
+                   InputToken(ocr='a', gs='an', start=8, len_ocr=1, label=1),
+                   InputToken(ocr='cxample...', gs='example.', start=10, len_ocr=10, label=1)],
+     score=0.2)</code></pre>
+<p>The next step is processing the entire dataset. This can be done with the <a href="https://jvdzwaan.github.io/ocrpostcorrection/icdar_data.html#generate_data">generate_data</a> function. The ouptut of this function consists of a dictionary containing <code>&lt;file name&gt;: Text</code> pairs and a pandas DataFrame containing metadata. For each file, the metadata contains file name, language, score (normalized editdistance), and the numbers of aligned and input tokens:</p>
+<table class="table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>language</th>
+<th>file_name</th>
+<th>score</th>
+<th>num_tokens</th>
+<th>num_input_tokens</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>SL</td>
+<td>SL/SL1/29.txt</td>
+<td>0.463415</td>
+<td>7</td>
+<td>7</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>SL</td>
+<td>SL/SL1/15.txt</td>
+<td>0.773294</td>
+<td>155</td>
+<td>246</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>SL</td>
+<td>SL/SL1/114.txt</td>
+<td>0.019256</td>
+<td>268</td>
+<td>272</td>
+</tr>
+</tbody>
+</table>
+<p>The train set consists of 11662 text files. The mean number of <code>InputToken</code>s is 269.51, with a standard deviation of 200.61. The minimum number of <code>InputToken</code>s is 0 and the maximum 3068. The histogram below shows the distribution of the number of <code>InputToken</code>s. Most texts have less than 250 <code>InputToken</code>s and there are some very long texts.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href=""><img src="numbers_of_input_tokens_in_icdar_train_set.png" class="img-fluid figure-img"></a></p>
+</figure>
+</div>
+<p>The mean normalized editdistance between OCR and GS text is 0.21, with a standard deviation of 0.13. The minimum is 0.00 and the maximum is 1.00. Smaller distances are better (less OCR mistakes). The distribution of normalized editdistance shows two peaks; one close to zero and one between 0.2 and 0.3. Most texts have a low editdistance. This means that most texts should be of high enough quality to be able to learn from.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href=""><img src="normalized_editdistance_in_train_set.png" class="img-fluid figure-img"></a></p>
+</figure>
+</div>
+<p>The ICDAR dataset consists of a train and test set. For validation, I split off 10% of the texts from the train set, stratified on language.</p>
+<p>Because BERT has a limit on input length and the length of the texts vary, the texts are split up in smaller sequences. As an approximation of sentence length, for this first experiment, I chose a sequence length of 35 tokens (with an overlap of 5 tokens). The <a href="https://jvdzwaan.github.io/ocrpostcorrection/icdar_data.html#generate_sentences">generate_sentence</a> function returns sequences of a certain length and overlap, given the metadata DataFrame and dictionary of <code>Text</code> instances.</p>
+<p>The sequences are returned as pandas DataFrame, which can be converted to a <a href="https://huggingface.co/docs/datasets/package_reference/main_classes#datasets.Dataset">Hugging Face Dataset</a> using the <a href="https://huggingface.co/docs/datasets/v2.6.0/en/package_reference/main_classes#datasets.Dataset.from_pandas">Dataset.from_pandas()</a> method. The first two ‘sentences’ in the train set look like:</p>
+<pre><code>{
+    'key': 'FR/FR1/499.txt',
+    'start_token_id': 0,
+    'score': 0.0464135021,
+    'tokens': ['Johannes,', 'Dei', 'gratia,', 'Francorum', 'rex.', 'Notum', 'facimus', 'universis,', 'tam', 'presentibus', 'quam', 'futuris,', 'nobis,', 'ex', 'parte', 'Petri', 'juvenis', 'sentiferi', 'qui', 'bene', 'et', 'fideliter', 'in', 'guerris', 'nostris', 'nobis', 'servivit', 'expositum', 'fuisse,', 'qod', 'cum', 'ipse,', 'tam', 'nomine', 'suo'],
+    'tags': [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0],
+    'language': 'FR'
+},
+{
+    'key': 'FR/FR1/499.txt',
+    'start_token_id': 30,
+    'score': 0.0204918033,
+    'tokens': ['cum', 'ipse,', 'tam', 'nomine', 'suo', 'quam', 'ut', 'tutor', 'et', 'ha', 'bens', 'gubernacionem', 'seu', 'ballum', 'fratrum', 'et', 'sororum', 'suorum', 'in', 'minori', 'etate', 'constitutorum,', 'possessionem', 'aliquorum', 'bonorum', 'mobi', 'lium', 'et', 'inmobilium', 'apprehenderit,', 'quorum', 'possessionem', 'Thomas', 'juvenis', 'pater'],
+    'tags': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+    'language': 'FR'
+}</code></pre>
+<p>Each sample specifies <code>key</code>, <code>start_token_id</code>, <code>score</code>, <code>tokens</code>, <code>tags</code>, and <code>language</code>. The <code>key</code> links the sample to the text file the sequence was taken from. <code>start_token_id</code> is used to merge the sequences, so we get predictions for all tokens in the text. This way, performance can be calculated for complete texts instead of sequences. <code>score</code> (normalized editdistance) is used for selecting high qualitity data. For the first experiment, sequences with a normalized editdistance &gt; 0.3 were removed from the train and validation sets (but not from the test set!). <code>tokens</code> and <code>tags</code> contain the data that is used to train the classifier. <code>language</code> was not used for the first experiment.</p>
+</section>
+<section id="the-model" class="level2">
+<h2 class="anchored" data-anchor-id="the-model">The model</h2>
+<p>The code for training the model can be found in <a href="https://github.com/jvdzwaan/ocrpostcorrection-notebooks/blob/main/colab/icdar-task1-hf-train.ipynb">this notebook</a>. After loading the dataset, there is one more detail that needs to be taken care of. BERT uses subword tokenization, while the dataset contains labels for complete words. Also, BERT tokenizers add special tokens <code>[CLS]</code> and <code>[SEP]</code>. This means that after BERT tokenization, the input labels don’t match the tokens anymore, e.g.,</p>
+<p>Input sequence (and labels):</p>
+<pre><code>{
+    'tokens': ['This', 'is', 'a', 'cxample...']
+    'tags': [0, 0, 1, 1]
+}</code></pre>
+<p>Because the ICDAR dataset is multilingual, I selected <a href="https://huggingface.co/bert-base-multilingual-cased"><code>bert-base-multilingual-cased</code></a> as a base model. Tokenized with the <code>bert-base-multilingual-cased</code> tokenizer the sequence becomes:</p>
+<pre><code>['[CLS]', 'This', 'is', 'a', 'c', '##xa', '##mp', '##le', '.', '.', '.', '[SEP]']</code></pre>
+<p>To be able to train the model, the labels will have to be realigned. The <a href="https://jvdzwaan.github.io/ocrpostcorrection/token_classification.html#tokenize_and_align_labels">Hugging Face task guide on token classification</a> contains an example <code>tokenize_and_align</code> function for doing so. <a href="https://huggingface.co/docs/transformers/tasks/token_classification#preprocess">A slightly adapted version was added to the ocrpostcorrection package.</a> This function is a <a href="https://docs.python.org/3/library/functools.html#functools.partial">partial</a>, allowing the tokenizer to be instantiated separately. This makes it more convenient to apply it to a dataset using the <a href="https://huggingface.co/docs/datasets/process#map"><code>Dataset.map</code></a> function, because there is no need to add a <a href="https://docs.python.org/3/tutorial/controlflow.html#lambda-expressions">lambda function</a>. To use the function, do:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ocrpostcorrection.token_classification <span class="im">import</span> tokenize_and_align_labels</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>tokenized_icdar <span class="op">=</span> icdar_dataset.<span class="bu">map</span>(tokenize_and_align_labels(tokenizer), batched<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>After preparing the dataset, and instantiating a <a href="https://huggingface.co/docs/transformers/main_classes/data_collator#transformers.DataCollatorForTokenClassification">data collator</a>, <a href="https://huggingface.co/bert-base-multilingual-cased">model</a> and <a href="https://huggingface.co/docs/transformers/main_classes/trainer#trainer">trainer</a>, training can start. For this experiment, the model was trained on <a href="https://colab.research.google.com">Google Colab</a>, using the following training arguments:</p>
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> TrainingArguments</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>training_args <span class="op">=</span> TrainingArguments(</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    output_dir<span class="op">=</span><span class="st">'choose/your/own/output/directory'</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    evaluation_strategy<span class="op">=</span><span class="st">'epoch'</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    num_train_epochs<span class="op">=</span><span class="dv">3</span>,</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    load_best_model_at_end<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    save_strategy<span class="op">=</span><span class="st">'epoch'</span>,</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    per_device_train_batch_size<span class="op">=</span><span class="dv">16</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The best model came from epoch 2. For this model, training and validation loss were 0.254 and 0.291, respectively.</p>
+</section>
+<section id="results" class="level2">
+<h2 class="anchored" data-anchor-id="results">Results</h2>
+<p>The code that was used to determine the performance of the model can be found in <a href="https://github.com/jvdzwaan/ocrpostcorrection-notebooks/blob/main/colab/icdar-task1-hf-evaluation.ipynb">this notebook</a>. Performance is calculated using the competition evaluation script. This script expects input in the form:</p>
+<pre><code>{
+    "&lt;language&gt;/&lt;set&gt;/&lt;number&gt;.txt":
+        {
+            "0:1": {},
+            "4:2": {},
+            ...
+        }
+    ...
+}</code></pre>
+<p>The first number in the keys for a text represents the start index of the OCR mistake. The second number is the number of (input) tokens that are incorrect. The evaluation script calculates precision, recall and F-measure on the token level.</p>
+<p>It takes quite some steps to transform the (sub)token-level predictions that the model provides as output into the format accepted by the evaluation script. First, predictions for subtokens are merged into predictions for <code>InputToken</code>s. An <code>InputToken</code> is considered an OCR mistake if at least one subtoken is predicted to be an OCR mistake. Next, sequences of <code>InputToken</code>-level predictions are merged into predictions for an entire text. If predictions for overlapping <code>InputToken</code>s differ, it is considered as an OCR mistake. Finally, the predictions for individual tokens are translated to <code>character offset:number of tokens</code>-pairs. The <a href="https://jvdzwaan.github.io/ocrpostcorrection/utils.html#predictions2icdar_output">predictions2icdar_output</a> function is available for this conversion process. It takes as input the tokenized test set, the predicted labels, the tokenizer, and a dictionary with <code>&lt;file name&gt;: Text</code> pairs, and returns the expected ICDAR output format:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ocrpostcorrection.utils <span class="im">import</span> predictions2icdar_output, predictions_to_labels</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>output <span class="op">=</span> predictions2icdar_output(tokenized_icdar[<span class="st">'test'</span>],</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>                                  predictions_to_labels(predictions),</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>                                  tokenizer,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>                                  data_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>When saved to a JSON file, the <code>output</code> dictionary can be used to calculate performance using the <a href="https://jvdzwaan.github.io/ocrpostcorrection/utils.html#runevaluation">runEvaluation</a> function. The <code>runEvaluation</code> code was taken from the original <code>evalTool_ICDAR2017.py</code> (CC0 License) via <a href="https://github.com/Kotwic4/ocr-correction/blob/master/ocr_correction/dataset/icdar/evalTool_ICDAR2017.py">Kotwic4/ocr-correction</a>. In addition to the JSON file, the function requires the (path to the) test set as input. The function creates a csv file containing precision, recall, and F-measure for all texts in the test set. The following table contains the mean results grouped by language.</p>
+<table class="table">
+<colgroup>
+<col style="width: 17%">
+<col style="width: 23%">
+<col style="width: 18%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Language</th>
+<th style="text-align: right;">Precision</th>
+<th style="text-align: right;">Recall</th>
+<th style="text-align: right;">F-measure</th>
+<th style="text-align: right;">F-measure CCC (2019 competition winner)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">BG</td>
+<td style="text-align: right;">0.88</td>
+<td style="text-align: right;">0.67</td>
+<td style="text-align: right;">0.74</td>
+<td style="text-align: right;"><strong>0.77</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CZ</td>
+<td style="text-align: right;">0.81</td>
+<td style="text-align: right;">0.55</td>
+<td style="text-align: right;">0.64</td>
+<td style="text-align: right;"><strong>0.70</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">DE</td>
+<td style="text-align: right;">0.98</td>
+<td style="text-align: right;">0.89</td>
+<td style="text-align: right;">0.93</td>
+<td style="text-align: right;"><strong>0.95</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">EN</td>
+<td style="text-align: right;">0.85</td>
+<td style="text-align: right;">0.54</td>
+<td style="text-align: right;">0.62</td>
+<td style="text-align: right;"><strong>0.67</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ES</td>
+<td style="text-align: right;">0.91</td>
+<td style="text-align: right;">0.46</td>
+<td style="text-align: right;">0.59</td>
+<td style="text-align: right;"><strong>0.69</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FI</td>
+<td style="text-align: right;">0.89</td>
+<td style="text-align: right;">0.77</td>
+<td style="text-align: right;">0.82</td>
+<td style="text-align: right;"><strong>0.84</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FR</td>
+<td style="text-align: right;">0.81</td>
+<td style="text-align: right;">0.49</td>
+<td style="text-align: right;">0.59</td>
+<td style="text-align: right;"><strong>0.67</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NL</td>
+<td style="text-align: right;">0.87</td>
+<td style="text-align: right;">0.60</td>
+<td style="text-align: right;">0.66</td>
+<td style="text-align: right;"><strong>0.71</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PL</td>
+<td style="text-align: right;">0.89</td>
+<td style="text-align: right;">0.70</td>
+<td style="text-align: right;">0.77</td>
+<td style="text-align: right;"><strong>0.82</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SL</td>
+<td style="text-align: right;">0.80</td>
+<td style="text-align: right;">0.58</td>
+<td style="text-align: right;">0.64</td>
+<td style="text-align: right;"><strong>0.69</strong></td>
+</tr>
+</tbody>
+</table>
+<p>The last column of the table reports the mean F-measure for CCC, the 2019 competition winner. CCC outperforms the new model on every language, although, for some languages the difference is quite small. However, for a first attempt, I think the results are not bad at all!</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<script src="https://utteranc.es/client.js" repo="jvdzwaan/jvdzwaan.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

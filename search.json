@@ -1,0 +1,135 @@
+[
+  {
+    "objectID": "posts/01_Detecting-OCR-mistakes-experiment-1/index.html",
+    "href": "posts/01_Detecting-OCR-mistakes-experiment-1/index.html",
+    "title": "Detecting OCR mistakes in text using BERT for token classification",
+    "section": "",
+    "text": "Some years ago, I did a project with the Dutch National Library on OCR post-correction. I wanted to investigate the potential of Deep Learning for correcting OCR errors in text. For various reasons, we never got very good results. Around the same time, two competitions on post-OCR text correction were organized at the ICDAR conference (2017 and 2019). I remained interested in the problem and started working on reproducing the competition results in my free time.\nThe competition divided the challenge of OCR post-correction into two tasks:\nThis post is about my first experiences with solving the detection task. The paper about the results contains very brief descriptions of the competitors’ solutions, which makes it hard to reproduce their models. The paper states that the winner used multilingual BERT with CNN layers for recognizing tokens with OCR mistakes. For simplicity, I decided to start with training a simpler BERT for token classification model."
+  },
+  {
+    "objectID": "posts/01_Detecting-OCR-mistakes-experiment-1/index.html#the-data",
+    "href": "posts/01_Detecting-OCR-mistakes-experiment-1/index.html#the-data",
+    "title": "Detecting OCR mistakes in text using BERT for token classification",
+    "section": "The data",
+    "text": "The data\nThe competition dataset consists of (historical) newspaper data in 10 languages. Each text file contains three lines, e.g.,\n[OCR_toInput] This is a cxample...\n[OCR_aligned] This is a@ cxample...\n[ GS_aligned] This is an example.@@\nThe first line contains the ocr input text. The second line contains the aligned ocr and the third line contains the aligned gold standard (GS). @ is the aligment character and # represents tokens in the OCR that do not occur in the gold standard (noise).\nTask 1 of the competition is about finding tokens with OCR mistakes. In this context, a token refers to a string between two whitespaces. The goal of this task is to predict the position and length of OCR mistakes. I created a Python library called ocrpostcorrection that contains functionality for doing OCR postcorrection, including converting the ICDAR dataset into a Hugging Face dataset with ‘sentences’ of a certain length. This notebook contains the code used to create the dataset. I will now explain the most important steps.\nFirst, a text is divided into aligned tokens by splitting the aligned OCR and GS on matching whitespaces. The ocrpostcorrection library contains a dataclass AlignedToken which is used to store the results:\n\nfrom dataclasses import dataclass\n\n@dataclass\nclass AlignedToken:\n    ocr: str  # String in the OCR text (excluding aligmnent characters)\n    gs: str  # String in the gold standard (excluding aligmnent characters)\n    ocr_aligned: str  # String in the aligned OCR text (including aligmnent characters)\n    gs_aligned: str  # String in the aligned GS text (including aligmnent characters)\n    start: int  # The index of the first character in the OCR text\n    len_ocr: int  # The lentgh of the OCR string\n\nThe tokenize_aligned function is used to divide an input text into AlignedTokens.\n\nfrom ocrpostcorrection.icdar_data import tokenize_aligned\n\ntokenize_aligned('This is a@ cxample...', 'This is an example.@@')\n\n[AlignedToken(ocr='This', gs='This', ocr_aligned='This', gs_aligned='This', start=0, len_ocr=4),\n AlignedToken(ocr='is', gs='is', ocr_aligned='is', gs_aligned='is', start=5, len_ocr=2),\n AlignedToken(ocr='a', gs='an', ocr_aligned='a@', gs_aligned='an', start=8, len_ocr=1),\n AlignedToken(ocr='cxample...', gs='example.', ocr_aligned='cxample...', gs_aligned='example.@@', start=10, len_ocr=10)]\n\n\nThe OCR text of an AlignedToken may still consist of multiple tokens. This is the case when the OCR text contains one or more spaces. To make sure the (sub)tokenization of a token is the same, no matter if it was not yet tokenized completely, another round of tokenization is added. Using the get_input_tokens function, every AlignedToken is split on whitespace. Each subtoken is stored in the InputToken dataclass:\n\nfrom dataclasses import dataclass\n\n@dataclass\nclass InputToken:\n    ocr: str  # OCR text\n    gs: str  # GS text\n    start: int  # character offset in the original OCR text\n    len_ocr: int  # length of the OCR text\n    label: int  # Class label: [0, 1, 2]\n\nThis dataclass also adds the class labels. There are three classes:\n\n0: No OCR mistake\n1: Start token of an OCR mistake\n2: Inside token of an OCR mistake\n\nThis example code shows how an AlignedToken is divided into inputTokens:\n\nfrom ocrpostcorrection.icdar_data import AlignedToken, get_input_tokens\n\nt = AlignedToken('Long ow.', 'Longhow.', 'Long ow.', 'Longhow.', 24, 8)\nprint(t)\n\nfor inp_tok in get_input_tokens(t):\n    print(inp_tok)\n\nAlignedToken(ocr='Long ow.', gs='Longhow.', ocr_aligned='Long ow.', gs_aligned='Longhow.', start=24, len_ocr=8)\nInputToken(ocr='Long', gs='Longhow.', start=24, len_ocr=4, label=1)\nInputToken(ocr='ow.', gs='', start=29, len_ocr=3, label=2)\n\n\nThe output produced by this code is:\nAlignedToken(ocr='Long ow.', gs='Longhow.', ocr_aligned='Long ow.', gs_aligned='Longhow.', start=24, len_ocr=8)\nInputToken(ocr='Long', gs='Longhow.', start=24, len_ocr=4, label=1)\nInputToken(ocr='ow.', gs='', start=29, len_ocr=3, label=2)\nA text can be tokenized by combining the tokenize_aligned and get_input_tokens functions. Texts are stored in another dataclass:\n\nfrom dataclasses import dataclass\n\n@dataclass\nclass Text:\n    ocr_text: str  # OCR input text\n    tokens: list  # List of AlignedTokens\n    input_tokens: list  # List of InputTokens\n    score: float  # Normalized editdistance between OCR and GS text\n\nA text file can be tokenized using the function process_text:\n\nfrom pathlib import Path\nfrom ocrpostcorrection.icdar_data import process_text\n\nin_file = Path('example.txt')\ntext = process_text(in_file)\n\nwhich results in the following instance of the Text dataclass:\nText(ocr_text='This is a cxample...',\n     tokens=[AlignedToken(ocr='This', gs='This', ocr_aligned='This', gs_aligned='This', start=0, len_ocr=4),\n             AlignedToken(ocr='is', gs='is', ocr_aligned='is', gs_aligned='is', start=5, len_ocr=2),\n             AlignedToken(ocr='a', gs='an', ocr_aligned='a@', gs_aligned='an', start=8, len_ocr=1),\n             AlignedToken(ocr='cxample...', gs='example.', ocr_aligned='cxample...', gs_aligned='example.@@', start=10, len_ocr=10)],\n     input_tokens=[InputToken(ocr='This', gs='This', start=0, len_ocr=4, label=0),\n                   InputToken(ocr='is', gs='is', start=5, len_ocr=2, label=0),\n                   InputToken(ocr='a', gs='an', start=8, len_ocr=1, label=1),\n                   InputToken(ocr='cxample...', gs='example.', start=10, len_ocr=10, label=1)],\n     score=0.2)\nThe next step is processing the entire dataset. This can be done with the generate_data function. The ouptut of this function consists of a dictionary containing <file name>: Text pairs and a pandas DataFrame containing metadata. For each file, the metadata contains file name, language, score (normalized editdistance), and the numbers of aligned and input tokens:\n\n\n\n\n\n\n\n\n\n\n\n\nlanguage\nfile_name\nscore\nnum_tokens\nnum_input_tokens\n\n\n\n\n0\nSL\nSL/SL1/29.txt\n0.463415\n7\n7\n\n\n1\nSL\nSL/SL1/15.txt\n0.773294\n155\n246\n\n\n2\nSL\nSL/SL1/114.txt\n0.019256\n268\n272\n\n\n\nThe train set consists of 11662 text files. The mean number of InputTokens is 269.51, with a standard deviation of 200.61. The minimum number of InputTokens is 0 and the maximum 3068. The histogram below shows the distribution of the number of InputTokens. Most texts have less than 250 InputTokens and there are some very long texts.\n\n\n\n\n\nThe mean normalized editdistance between OCR and GS text is 0.21, with a standard deviation of 0.13. The minimum is 0.00 and the maximum is 1.00. Smaller distances are better (less OCR mistakes). The distribution of normalized editdistance shows two peaks; one close to zero and one between 0.2 and 0.3. Most texts have a low editdistance. This means that most texts should be of high enough quality to be able to learn from.\n\n\n\n\n\nThe ICDAR dataset consists of a train and test set. For validation, I split off 10% of the texts from the train set, stratified on language.\nBecause BERT has a limit on input length and the length of the texts vary, the texts are split up in smaller sequences. As an approximation of sentence length, for this first experiment, I chose a sequence length of 35 tokens (with an overlap of 5 tokens). The generate_sentence function returns sequences of a certain length and overlap, given the metadata DataFrame and dictionary of Text instances.\nThe sequences are returned as pandas DataFrame, which can be converted to a Hugging Face Dataset using the Dataset.from_pandas() method. The first two ‘sentences’ in the train set look like:\n{\n    'key': 'FR/FR1/499.txt',\n    'start_token_id': 0,\n    'score': 0.0464135021,\n    'tokens': ['Johannes,', 'Dei', 'gratia,', 'Francorum', 'rex.', 'Notum', 'facimus', 'universis,', 'tam', 'presentibus', 'quam', 'futuris,', 'nobis,', 'ex', 'parte', 'Petri', 'juvenis', 'sentiferi', 'qui', 'bene', 'et', 'fideliter', 'in', 'guerris', 'nostris', 'nobis', 'servivit', 'expositum', 'fuisse,', 'qod', 'cum', 'ipse,', 'tam', 'nomine', 'suo'],\n    'tags': [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0],\n    'language': 'FR'\n},\n{\n    'key': 'FR/FR1/499.txt',\n    'start_token_id': 30,\n    'score': 0.0204918033,\n    'tokens': ['cum', 'ipse,', 'tam', 'nomine', 'suo', 'quam', 'ut', 'tutor', 'et', 'ha', 'bens', 'gubernacionem', 'seu', 'ballum', 'fratrum', 'et', 'sororum', 'suorum', 'in', 'minori', 'etate', 'constitutorum,', 'possessionem', 'aliquorum', 'bonorum', 'mobi', 'lium', 'et', 'inmobilium', 'apprehenderit,', 'quorum', 'possessionem', 'Thomas', 'juvenis', 'pater'],\n    'tags': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],\n    'language': 'FR'\n}\nEach sample specifies key, start_token_id, score, tokens, tags, and language. The key links the sample to the text file the sequence was taken from. start_token_id is used to merge the sequences, so we get predictions for all tokens in the text. This way, performance can be calculated for complete texts instead of sequences. score (normalized editdistance) is used for selecting high qualitity data. For the first experiment, sequences with a normalized editdistance > 0.3 were removed from the train and validation sets (but not from the test set!). tokens and tags contain the data that is used to train the classifier. language was not used for the first experiment."
+  },
+  {
+    "objectID": "posts/01_Detecting-OCR-mistakes-experiment-1/index.html#the-model",
+    "href": "posts/01_Detecting-OCR-mistakes-experiment-1/index.html#the-model",
+    "title": "Detecting OCR mistakes in text using BERT for token classification",
+    "section": "The model",
+    "text": "The model\nThe code for training the model can be found in this notebook. After loading the dataset, there is one more detail that needs to be taken care of. BERT uses subword tokenization, while the dataset contains labels for complete words. Also, BERT tokenizers add special tokens [CLS] and [SEP]. This means that after BERT tokenization, the input labels don’t match the tokens anymore, e.g.,\nInput sequence (and labels):\n{\n    'tokens': ['This', 'is', 'a', 'cxample...']\n    'tags': [0, 0, 1, 1]\n}\nBecause the ICDAR dataset is multilingual, I selected bert-base-multilingual-cased as a base model. Tokenized with the bert-base-multilingual-cased tokenizer the sequence becomes:\n['[CLS]', 'This', 'is', 'a', 'c', '##xa', '##mp', '##le', '.', '.', '.', '[SEP]']\nTo be able to train the model, the labels will have to be realigned. The Hugging Face task guide on token classification contains an example tokenize_and_align function for doing so. A slightly adapted version was added to the ocrpostcorrection package. This function is a partial, allowing the tokenizer to be instantiated separately. This makes it more convenient to apply it to a dataset using the Dataset.map function, because there is no need to add a lambda function. To use the function, do:\nfrom ocrpostcorrection.token_classification import tokenize_and_align_labels\n\ntokenized_icdar = icdar_dataset.map(tokenize_and_align_labels(tokenizer), batched=True)\nAfter preparing the dataset, and instantiating a data collator, model and trainer, training can start. For this experiment, the model was trained on Google Colab, using the following training arguments:\n\nfrom transformers import TrainingArguments\n\ntraining_args = TrainingArguments(\n    output_dir='choose/your/own/output/directory',\n    evaluation_strategy='epoch',\n    num_train_epochs=3,\n    load_best_model_at_end=True,\n    save_strategy='epoch',\n    per_device_train_batch_size=16\n)\n\nThe best model came from epoch 2. For this model, training and validation loss were 0.254 and 0.291, respectively."
+  },
+  {
+    "objectID": "posts/01_Detecting-OCR-mistakes-experiment-1/index.html#results",
+    "href": "posts/01_Detecting-OCR-mistakes-experiment-1/index.html#results",
+    "title": "Detecting OCR mistakes in text using BERT for token classification",
+    "section": "Results",
+    "text": "Results\nThe code that was used to determine the performance of the model can be found in this notebook. Performance is calculated using the competition evaluation script. This script expects input in the form:\n{\n    \"<language>/<set>/<number>.txt\":\n        {\n            \"0:1\": {},\n            \"4:2\": {},\n            ...\n        }\n    ...\n}\nThe first number in the keys for a text represents the start index of the OCR mistake. The second number is the number of (input) tokens that are incorrect. The evaluation script calculates precision, recall and F-measure on the token level.\nIt takes quite some steps to transform the (sub)token-level predictions that the model provides as output into the format accepted by the evaluation script. First, predictions for subtokens are merged into predictions for InputTokens. An InputToken is considered an OCR mistake if at least one subtoken is predicted to be an OCR mistake. Next, sequences of InputToken-level predictions are merged into predictions for an entire text. If predictions for overlapping InputTokens differ, it is considered as an OCR mistake. Finally, the predictions for individual tokens are translated to character offset:number of tokens-pairs. The predictions2icdar_output function is available for this conversion process. It takes as input the tokenized test set, the predicted labels, the tokenizer, and a dictionary with <file name>: Text pairs, and returns the expected ICDAR output format:\nfrom ocrpostcorrection.utils import predictions2icdar_output, predictions_to_labels\n\noutput = predictions2icdar_output(tokenized_icdar['test'],\n                                  predictions_to_labels(predictions),\n                                  tokenizer,\n                                  data_test)\nWhen saved to a JSON file, the output dictionary can be used to calculate performance using the runEvaluation function. The runEvaluation code was taken from the original evalTool_ICDAR2017.py (CC0 License) via Kotwic4/ocr-correction. In addition to the JSON file, the function requires the (path to the) test set as input. The function creates a csv file containing precision, recall, and F-measure for all texts in the test set. The following table contains the mean results grouped by language.\n\n\n\n\n\n\n\n\n\n\nLanguage\nPrecision\nRecall\nF-measure\nF-measure CCC (2019 competition winner)\n\n\n\n\nBG\n0.88\n0.67\n0.74\n0.77\n\n\nCZ\n0.81\n0.55\n0.64\n0.70\n\n\nDE\n0.98\n0.89\n0.93\n0.95\n\n\nEN\n0.85\n0.54\n0.62\n0.67\n\n\nES\n0.91\n0.46\n0.59\n0.69\n\n\nFI\n0.89\n0.77\n0.82\n0.84\n\n\nFR\n0.81\n0.49\n0.59\n0.67\n\n\nNL\n0.87\n0.60\n0.66\n0.71\n\n\nPL\n0.89\n0.70\n0.77\n0.82\n\n\nSL\n0.80\n0.58\n0.64\n0.69\n\n\n\nThe last column of the table reports the mean F-measure for CCC, the 2019 competition winner. CCC outperforms the new model on every language, although, for some languages the difference is quite small. However, for a first attempt, I think the results are not bad at all!"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Latest posts",
+    "section": "",
+    "text": "ocr post-correction\n\n\n\n\n\n\n\n\n\n\n\nOct 21, 2022\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "In a previous life, I worked in academia. You can find my publications here."
+  },
+  {
+    "objectID": "publications.html",
+    "href": "publications.html",
+    "title": "Publications",
+    "section": "",
+    "text": "Publications by Janneke van der Zwaan."
+  },
+  {
+    "objectID": "publications.html#section",
+    "href": "publications.html#section",
+    "title": "Publications",
+    "section": "2021",
+    "text": "2021\n\nText Mining Islamic Law by Christian Lange, Maksim Abdul Latif, Yusuf Çelik, A. Melle Lyklema, Dafne E. van Kuppevelt, and Janneke van der Zwaan. In: Islamic Law and Society, 28, pages 234-281, 2021. DOI: 10.1163/15685195-bja10009 (bibtex)"
+  },
+  {
+    "objectID": "publications.html#section-1",
+    "href": "publications.html#section-1",
+    "title": "Publications",
+    "section": "2019",
+    "text": "2019\n\nAre you sure your tool does what it is supposed to do? Validating Arabic root extraction by Janneke van der Zwaan, Maksim Abdul Latif, Dafne van Kuppevelt, Melle Lyklema, and Christian Lange. In: Digital Scholarship in the Humanities, 36, supplement 1, 2021. DOI: 10.1093/llc/fqz045 (bibtex)\nTowards text mining therapeutic change: A systematic review of text-based methods for Therapeutic Change Process Research by Wouter Smink, Anneke Sools, Janneke van der Zwaan, Sytse Wiegersma, Bernard Veldkamp, and Gerben Westerhof. In: PLOS ONE, 14, pages 1-21, 2019. DOI: 10.1371/journal.pone.0225703 (bibtex)\nTICCLAT: a Dutch diachronical database of linked word-variants (abstract) by Martin Reynaert, Patrick Bos, and Janneke van der Zwaan. In: DHBenelux, 2019. (bibtex)\nGranularity versus Dispersion in the Dutch Diachronical Database of Lexical Frequencies TICCLAT (poster) by Martin Reynaert, Patrick Bos, and Janneke van der Zwaan. In: CLARIN Annual Conference, 2019. (bibtex)"
+  },
+  {
+    "objectID": "publications.html#section-2",
+    "href": "publications.html#section-2",
+    "title": "Publications",
+    "section": "2018",
+    "text": "2018\n\nOchre, a Toolbox for OCR Post-Correction (poster) by Janneke van der Zwaan and Lotte Wilms. In: Computational Linguistics in the Netherlands, CLIN28, Nijmegen, 2018. DOI: 10.5281/zenodo.1189244 (bibtex)\nBridging the gap: Digital Humanities and the Arabic-Islamic corpus (abstract) (poster) by Dafne van Kuppevelt, Patrick Bos, Melle Lyklema, Umar Ryad, Christian Lange, and Janneke van der Zwaan. In: Digital Humanities, 2018. (bibtex)"
+  },
+  {
+    "objectID": "publications.html#section-3",
+    "href": "publications.html#section-3",
+    "title": "Publications",
+    "section": "2017",
+    "text": "2017\n\nFlexible NLP Pipelines for Digital Humanities Research (abstract) by Janneke van der Zwaan, Wouter Smink, Anneke Sools, Gerben Westerhof, Bernard Veldkamp, and Sytske Wiegersma. In: Digital Humanities, 2017. (bibtex)\nMining Embodied Emotions: a Comparative Analysis of Sentiment and Emotion in Dutch Texts, 1600-1800, by Inger Leemans, Janneke van der Zwaan, Isa Maks, Erika Kuijpers, and Kristine Steenbergh. In: Digital Humanities Quarterly, 11.4, 2017. (bibtex)\nStoryteller: Visual Analytics of Perspectives on Rich Text Interpretations by Maarten van Meersbergen, Janneke van der Zwaan, Willem van Hage, Piek Vossen, Antske Fokkens, Inger Leemans, and Isa Maks. In: Proceedings of the 2017 EMNLP Workshop: Natural Language Processing meets Journalism, 2017, pages 37-45. (bibtex)"
+  },
+  {
+    "objectID": "publications.html#section-4",
+    "href": "publications.html#section-4",
+    "title": "Publications",
+    "section": "2016",
+    "text": "2016\n\nValidating Cross-perspective Topic Modeling for Extracting Political Parties’ Positions from Parliamentary Proceedings by Janeke van der Zwaan, Maarten Marx, and Jaap Kamps. In: Proceedings of the Twenty-second European Conference on Artificial Intelligence (ECAI), 2016, pages 28-36. DOI: 10.3233/978-1-61499-672-9-28 (bibtex)\nStoryteller: Visualizing Perspectives in Digital Humanities Projects by Janneke van der Zwaan, Maarten van Meersbergen, Antske Fokkens, Serge ter Braake, Inger Leemans, Erika Kuipers, Piek Vossen, and Isa Maks. In: Computational History and Data-Driven Humanities, 2016, pages 78-90. DOI: 10.1007/978-3-319-46224-0_8 (bibtex)\nTopic Coherence for Dutch (abstract) by Janneke van der Zwaan, Maarten Marx, and Jaap Kamps. In: DHBenelux, 2016. (bibtex)"
+  },
+  {
+    "objectID": "publications.html#section-5",
+    "href": "publications.html#section-5",
+    "title": "Publications",
+    "section": "2015",
+    "text": "2015\n\nHEEM, a Complex Model for Mining Emotions in Historical Text, by Janneke van der Zwaan, Inger Leemans, Erika Kuijpers, and Isa Maks. In: 2015 IEEE 11th International Conference on e-Science, 2015, pages 22-30. DOI: 10.1109/eScience.2015.18 (bibtex)"
+  },
+  {
+    "objectID": "publications.html#section-6",
+    "href": "publications.html#section-6",
+    "title": "Publications",
+    "section": "2014",
+    "text": "2014\n\nAn empathic virtual buddy for social support, by Janneke van der Zwaan. PhD thesis, 2014. DOI: 10.4233/uuid:f32371b2-82cc-414e-9569-2d56b12a530a (bibtex)"
+  },
+  {
+    "objectID": "publications.html#section-7",
+    "href": "publications.html#section-7",
+    "title": "Publications",
+    "section": "2013",
+    "text": "2013\n\nA Qualitative Evaluation of Social Support by an Empathic Agent, by Janneke van der Zwaan, Virginia Dignum, and Catholijn Jonker. In: Intelligent Virtual Agents, 2013, pages 358-367. DOI: 10.1007/978-3-642-40415-3_32 (bibtex)\nOn Technology Against Cyberbullying, by Janneke van der Zwaan, Virginia Dignum, Catholijn Jonker, and Simone van der Hof. In: Responsible Innovation Volume 1: Innovative Solutions for Global Issues, 2013, pages 369-392. DOI: 10.1007/978-94-017-8956-1_21 (bibtex)\nDo Underlying Attitudes Affect Users’ Subjective Experiences? The Case of an Empathic Agent, by Janneke van der Zwaan, Virginia Dignum, and Catholijn Jonker. In: Proceedings of the 12th International Conference on Autonomous Agents and Multiagent Systems (AAMAS 2013), 2013, pages 1331-1332. (bibtex)\nRobin, an Empathic Virtual Buddy for Social Support (demo), by Janneke van der Zwaan, Virginia Dignum, and Catholijn Jonker. In: Proceedings of the 12th International Conference on Autonomous Agents and Multiagent Systems (AAMAS 2013), 2013, pages 1413-1414. (bibtex)\nThe Effect of Variations in Emotional Expressiveness on Social Support, by Janneke van der Zwaan, Virginia Dignum, and Catholijn Jonker. In: Proceedings of the 2013 Workshop on Computers as Social Actors, 2013, pages 9-20. (bibtex)"
+  },
+  {
+    "objectID": "publications.html#section-8",
+    "href": "publications.html#section-8",
+    "title": "Publications",
+    "section": "2012",
+    "text": "2012\n\nA Conversation Model Enabling Intelligent Agents to Give Emotional Support, by Janneke van der Zwaan, Virginia Dignum, and Catholijn Jonker. In: DOI: 10.1007/978-3-642-30732-4_6 (bibtex)\nA Conversational Agent for Social Support: Validation of Supportive Dialogue Sequences, by Janneke van der Zwaan, Virginia Dignum, and Catholijn Jonker. In: Intelligent Virtual Agents, 2012, pages 499-501. DOI: 10.1007/978-3-642-33197-8_58 (bibtex)\nA BDI Dialogue Agent for Social Support: Specification and Evaluation Method, by Janneke van der Zwaan, Virginia Dignum, and Catholijn Jonker. In: Proceedings of the 3rd Workshop on Emotional and Empathic Agents @ AAMAS 2012. (bibtex)\nA BDI Dialogue Agent for Social Support: Specification of Verbal Support Types, by Janneke van der Zwaan, Virginia Dignum, and Catholijn Jonker. In: International Foundation for Autonomous Agents and Multiagent Systems, 2012 pages 1183-1184. (bibtex)\nUser Validation of an Empathic Virtual Buddy against Cyberbullying, by Janneke van der Zwaan, Elke Geraerts, Virginia Dignum, and Catholijn Jonker. In: Studies in health technology and informatics, 2012, volume 181, pages 243-247. (bibtex)\nCorpus-Based Validation of a Dialogue Model for Social Support, by Janneke van der Zwaan, Virginia Dignum, and Catholijn Jonker. In: Proceedings of the 24th Benelux Conference on Artificial Intelligence (BNAIC), 2012, pages 258-265. (bibtex)\nA BDI Dialogue Agent for Social Support: Specification and Evaluation Method (B-paper), by Janneke van der Zwaan, Virginia Dignum, and Catholijn Jonker. In: Proceedings of the 24th Benelux Conference on Artificial Intelligence (BNAIC), 2012, pages 339-340. (bibtex)"
+  },
+  {
+    "objectID": "publications.html#section-9",
+    "href": "publications.html#section-9",
+    "title": "Publications",
+    "section": "2011",
+    "text": "2011\n\nEmpathic Virtual Buddy: Setting Up Informed Empathic Responses, by Janneke van der Zwaan, Virginia Dignum, Joost Broekens, and Catholijn Jonker. In: Proceedings of the 15th Portuguese Conference on Artificial Intelligence, 2011, pages 1-15. (bibtex)"
+  },
+  {
+    "objectID": "publications.html#section-10",
+    "href": "publications.html#section-10",
+    "title": "Publications",
+    "section": "2010",
+    "text": "2010\n\nSimulating Peer Support for Victims of Cyberbullying, by Janneke van der Zwaan, Virginia Dignum, and Catholijn Jonker. In: BNAIC 2010: 22rd Benelux Conference on Artificial Intelligence, 2010. (bibtex)"
+  },
+  {
+    "objectID": "publications.html#section-11",
+    "href": "publications.html#section-11",
+    "title": "Publications",
+    "section": "2007",
+    "text": "2007\n\nAn experiment in automatic classification of pathological reports, by Janneke van der Zwaan, Erik Tjong Kim Sang, and Maarten de Rijke. In: Conference on Artificial Intelligence in Medicine in Europe (AIME), 2007, pages 207-216. DOI: 10.1007/978-3-540-73599-1_28 (bibtex)"
+  }
+]
