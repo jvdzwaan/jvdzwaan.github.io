@@ -127,14 +127,6 @@ for inp_tok in get_input_tokens(t):
     print(inp_tok)
 ```
 
-The output produced by this code is:
-
-```
-AlignedToken(ocr='Long ow.', gs='Longhow.', ocr_aligned='Long ow.', gs_aligned='Longhow.', start=24, len_ocr=8)
-InputToken(ocr='Long', gs='Longhow.', start=24, len_ocr=4, label=1)
-InputToken(ocr='ow.', gs='', start=29, len_ocr=3, label=2)
-```
-
 A text can be tokenized by combining the `tokenize_aligned` and
 `get_input_tokens` functions. Texts are stored in another dataclass:
 
