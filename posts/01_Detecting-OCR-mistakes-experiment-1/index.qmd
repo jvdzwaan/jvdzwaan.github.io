@@ -57,7 +57,7 @@ library called [ocrpostcorrection](https://github.com/jvdzwaan/ocrpostcorrection
 that contains functionality for doing OCR postcorrection, including converting
 the ICDAR dataset into a Hugging Face dataset with 'sentences' of a certain
 length. This
-[notebook](https://github.com/jvdzwaan/ocrpostcorrection-notebooks/blob/main/local/icdar-create-hf-dataset.ipynb)
+[notebook](https://github.com/jvdzwaan/ocrpostcorrection-notebooks/blob/598bfa220db10f5c3c631aaace5c8dffd8d24937/local/icdar-create-hf-dataset.ipynb)
 contains the code used to create the dataset. I will now explain the most
 important steps.
 
@@ -246,7 +246,7 @@ to train the classifier. `language` was not used for the first experiment.
 ## The model
 
 The code for training the model can be found in
-[this notebook](https://github.com/jvdzwaan/ocrpostcorrection-notebooks/blob/main/colab/icdar-task1-hf-train.ipynb).
+[this notebook](https://github.com/jvdzwaan/ocrpostcorrection-notebooks/blob/598bfa220db10f5c3c631aaace5c8dffd8d24937/colab/icdar-task1-hf-train.ipynb).
 After loading the dataset, there is one more detail that needs to be taken care
 of. BERT uses subword tokenization, while the dataset contains labels for
 complete words. Also, BERT tokenizers add special tokens `[CLS]` and `[SEP]`.
@@ -314,7 +314,7 @@ were 0.254 and 0.291, respectively.
 ## Results
 
 The code that was used to determine the performance of the model can be found in
-[this notebook](https://github.com/jvdzwaan/ocrpostcorrection-notebooks/blob/main/colab/icdar-task1-hf-evaluation.ipynb).
+[this notebook](https://github.com/jvdzwaan/ocrpostcorrection-notebooks/blob/598bfa220db10f5c3c631aaace5c8dffd8d24937/colab/icdar-task1-hf-evaluation.ipynb).
 Performance is calculated using the competition evaluation script. This script
 expects input in the form:
 
