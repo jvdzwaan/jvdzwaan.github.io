@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://github.com/jvdzwaan/jvdzwaan.github.io/posts/01_Detecting-OCR-mistakes-experiment-1/index.html</loc>
-    <lastmod>2022-10-25T17:09:47.196Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/jvdzwaan/jvdzwaan.github.io/index.html</loc>
-    <lastmod>2022-10-25T17:09:47.944Z</lastmod>
-  </url>
-  <url>
     <loc>https://github.com/jvdzwaan/jvdzwaan.github.io/about.html</loc>
-    <lastmod>2022-10-25T17:09:48.304Z</lastmod>
+    <lastmod>2022-12-18T15:14:22.242Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/jvdzwaan/jvdzwaan.github.io/posts/01_Detecting-OCR-mistakes-experiment-1/index.html</loc>
+    <lastmod>2022-12-18T15:14:23.303Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/jvdzwaan/jvdzwaan.github.io/posts/2022-12-18_Storing-custom-token-classification-labels-in-a-Hugging-Face-dataset/index.html</loc>
+    <lastmod>2022-12-18T15:14:23.755Z</lastmod>
   </url>
   <url>
     <loc>https://github.com/jvdzwaan/jvdzwaan.github.io/publications.html</loc>
-    <lastmod>2022-10-25T17:09:48.840Z</lastmod>
+    <lastmod>2022-12-18T15:14:24.231Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/jvdzwaan/jvdzwaan.github.io/index.html</loc>
+    <lastmod>2022-12-18T15:14:24.575Z</lastmod>
   </url>
 </urlset>

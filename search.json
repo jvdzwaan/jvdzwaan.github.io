@@ -1,5 +1,12 @@
 [
   {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "Hello, my name is Janneke. I have a background in Artificial Intelligence. My main interest is Natural Language Processing. On this blog, I write about my hobby projects.\nIn a previous life, I worked in academia. You can find my publications here."
+  },
+  {
     "objectID": "posts/01_Detecting-OCR-mistakes-experiment-1/index.html",
     "href": "posts/01_Detecting-OCR-mistakes-experiment-1/index.html",
     "title": "Detecting OCR mistakes in text using BERT for token classification",
@@ -28,18 +35,11 @@
     "text": "Results\nThe code that was used to determine the performance of the model can be found in this notebook. Performance is calculated using the competition evaluation script. This script expects input in the form:\n{\n    \"<language>/<set>/<number>.txt\":\n        {\n            \"0:1\": {},\n            \"4:2\": {},\n            ...\n        }\n    ...\n}\nThe first number in the keys for a text represents the start index of the OCR mistake. The second number is the number of (input) tokens that are incorrect. The evaluation script calculates precision, recall and F-measure on the token level.\nIt takes quite some steps to transform the (sub)token-level predictions that the model provides as output into the format accepted by the evaluation script. First, predictions for subtokens are merged into predictions for InputTokens. An InputToken is considered an OCR mistake if at least one subtoken is predicted to be an OCR mistake. Next, sequences of InputToken-level predictions are merged into predictions for an entire text. If predictions for overlapping InputTokens differ, it is considered as an OCR mistake. Finally, the predictions for individual tokens are translated to character offset:number of tokens-pairs. The predictions2icdar_output function is available for this conversion process. It takes as input the tokenized test set, the predicted labels, the tokenizer, and a dictionary with <file name>: Text pairs, and returns the expected ICDAR output format:\nfrom ocrpostcorrection.utils import predictions2icdar_output, predictions_to_labels\n\noutput = predictions2icdar_output(tokenized_icdar['test'],\n                                  predictions_to_labels(predictions),\n                                  tokenizer,\n                                  data_test)\nWhen saved to a JSON file, the output dictionary can be used to calculate performance using the runEvaluation function. The runEvaluation code was taken from the original evalTool_ICDAR2017.py (CC0 License) via Kotwic4/ocr-correction. In addition to the JSON file, the function requires the (path to the) test set as input. The function creates a csv file containing precision, recall, and F-measure for all texts in the test set. The following table contains the mean results grouped by language.\n\n\n\n\n\n\n\n\n\n\nLanguage\nPrecision\nRecall\nF-measure\nF-measure CCC (2019 competition winner)\n\n\n\n\nBG\n0.88\n0.67\n0.74\n0.77\n\n\nCZ\n0.81\n0.55\n0.64\n0.70\n\n\nDE\n0.98\n0.89\n0.93\n0.95\n\n\nEN\n0.85\n0.54\n0.62\n0.67\n\n\nES\n0.91\n0.46\n0.59\n0.69\n\n\nFI\n0.89\n0.77\n0.82\n0.84\n\n\nFR\n0.81\n0.49\n0.59\n0.67\n\n\nNL\n0.87\n0.60\n0.66\n0.71\n\n\nPL\n0.89\n0.70\n0.77\n0.82\n\n\nSL\n0.80\n0.58\n0.64\n0.69\n\n\n\nThe last column of the table reports the mean F-measure for CCC, the 2019 competition winner. CCC outperforms the new model on every language, although, for some languages the difference is quite small. However, for a first attempt, I think the results are not bad at all!"
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Latest posts",
+    "objectID": "posts/2022-12-18_Storing-custom-token-classification-labels-in-a-Hugging-Face-dataset/index.html",
+    "href": "posts/2022-12-18_Storing-custom-token-classification-labels-in-a-Hugging-Face-dataset/index.html",
+    "title": "Storing custom token classification labels in a Hugging Face dataset",
     "section": "",
-    "text": "ocr post-correction\n\n\n\n\n\n\n\n\n\n\n\nOct 21, 2022\n\n\n\n\n\n\nNo matching items"
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "In a previous life, I worked in academia. You can find my publications here."
+    "text": "In my previous blog post, I showed how I created a Hugging Face dataset for detecting OCR mistakes. One thing thing that annoyed me about this dataset is that it didn’t contain the names of the token labels. I searched for the solution and tried different things, but couldn’t figure out how to do it. Then finally, when I had some time and was browsing the Hugging Face dataset documentation, I found methods cast() and cast_column() that allow you update the dataset features and properly set the class labels. Here is how to do it.\n\n\n\nTwelve species of fish, Carl Cristiaan Fuchs (1802 - 1855)\n\n\nFirst, load the dataset without the class labels:\n\nfrom datasets import load_from_disk\n\ndataset = load_from_disk('data/dataset')\n\nA sample from this dataset has the following features:\ndataset['train'][0]\n{\n    'key': 'FR/FR1/499.txt',\n    'start_token_id': 0,\n    'score': 0.0464135021,\n    'tokens': ['Johannes,', 'Dei', 'gratia,', 'Francorum', 'rex.', 'Notum', 'facimus', 'universis,', 'tam', 'presentibus', 'quam', 'futuris,', 'nobis,', 'ex', 'parte', 'Petri', 'juvenis', 'sentiferi', 'qui', 'bene', 'et', 'fideliter', 'in', 'guerris', 'nostris', 'nobis', 'servivit', 'expositum', 'fuisse,', 'qod', 'cum', 'ipse,', 'tam', 'nomine', 'suo'],\n    'tags': [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0],\n    'language': 'FR'\n}\n\nWhen looking at the features of the dataset, we see that the tags column is of type (Sequence of) Value (and not of (Sequence of) ClassLabel).\n\ndataset['train'].features\n\n{'key': Value(dtype='string', id=None),\n 'language': Value(dtype='string', id=None),\n 'score': Value(dtype='float64', id=None),\n 'start_token_id': Value(dtype='int64', id=None),\n 'tags': Sequence(feature=Value(dtype='int64', id=None), length=-1, id=None),\n 'tokens': Sequence(feature=Value(dtype='string', id=None), length=-1, id=None)}\n\n\nThe next step is to call the cast_column method with the correct properties:\n\nfrom datasets import Sequence, ClassLabel\n\ndataset = dataset.cast_column('tags', Sequence(feature=ClassLabel(num_classes=3, names=['O', 'OCR-Mistake-B', 'OCR-Mistake-I']), length=-1))\n\nLoading cached processed dataset at data/dataset/train/cache-7695d0b08b5f7b4d.arrow\n\n\nLoading cached processed dataset at data/dataset/val/cache-b0a1c2c8a428d020.arrow\n\n\nLoading cached processed dataset at data/dataset/test/cache-9e879e4bbea50e50.arrow\n\n\nAfter this update, the label names and label to name mapping are stored in the dataset:\n\ndataset['train'].features[\"tags\"].feature.names\n\n['O', 'OCR-Mistake-B', 'OCR-Mistake-I']\n\n\n\ndataset['train'].features[\"tags\"].feature._str2int\n\n{'O': 0, 'OCR-Mistake-B': 1, 'OCR-Mistake-I': 2}"
   },
   {
     "objectID": "publications.html",
@@ -131,5 +131,12 @@
     "title": "Publications",
     "section": "2007",
     "text": "2007\n\nAn experiment in automatic classification of pathological reports, by Janneke van der Zwaan, Erik Tjong Kim Sang, and Maarten de Rijke. In: Conference on Artificial Intelligence in Medicine in Europe (AIME), 2007, pages 207-216. DOI: 10.1007/978-3-540-73599-1_28 (bibtex)"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Latest posts",
+    "section": "",
+    "text": "Storing custom token classification labels in a Hugging Face dataset\n\n\n\n\n\n\n\ntips and tricks\n\n\n\n\n\n\n\n\n\n\n\nDec 18, 2022\n\n\n\n\n\n\n  \n\n\n\n\nDetecting OCR mistakes in text using BERT for token classification\n\n\n\n\n\n\n\nocr post-correction\n\n\n\n\n\n\n\n\n\n\n\nOct 21, 2022\n\n\n\n\n\n\nNo matching items"
   }
 ]

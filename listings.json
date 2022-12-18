@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/2022-12-18_Storing-custom-token-classification-labels-in-a-Hugging-Face-dataset/index.html",
       "/posts/01_Detecting-OCR-mistakes-experiment-1/index.html"
     ]
   }

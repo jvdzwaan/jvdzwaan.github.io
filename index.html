@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.1.251">
+<meta name="generator" content="quarto-1.2.280">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -112,17 +112,18 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./about.html">About</a>
+    <a class="nav-link" href="./about.html">
+ <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/jvdzwaan"><i class="bi bi-github" role="img">
 </i> 
- </a>
+ <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="https://twitter.com/jvdzwa"><i class="bi bi-twitter" role="img">
 </i> 
- </a>
+ <span class="menu-text"></span></a>
   </li>  
 </ul>
               <div id="quarto-search" class="" title="Search"></div>
@@ -136,7 +137,7 @@ ul.task-list li input[type="checkbox"] {
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(1)</span></div><div class="category" data-category="ocr post-correction">ocr post-correction <span class="quarto-category-count">(1)</span></div></div></div>
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(2)</span></div><div class="category" data-category="ocr post-correction">ocr post-correction <span class="quarto-category-count">(1)</span></div><div class="category" data-category="tips and tricks">tips and tricks <span class="quarto-category-count">(1)</span></div></div></div>
 <!-- main -->
 <main class="content column-page-left" id="quarto-document-content">
 
@@ -150,6 +151,7 @@ ul.task-list li input[type="checkbox"] {
 <div class="quarto-title-meta">
 
     
+  
     
   </div>
   
@@ -162,7 +164,39 @@ ul.task-list li input[type="checkbox"] {
 
 <div class="quarto-listing quarto-listing-container-default" id="listing-listing">
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="ocr post-correction" data-listing-date-sort="1666310400000" data-listing-file-modified-sort="1666717771762" data-listing-reading-time-sort="13.175">
+<div class="quarto-post image-right" data-index="0" data-categories="tips and tricks" data-listing-date-sort="1671321600000" data-listing-file-modified-sort="1671376436502" data-listing-reading-time-sort="1.35">
+<div class="thumbnail">
+<p><a href="./posts/2022-12-18_Storing-custom-token-classification-labels-in-a-Hugging-Face-dataset/index.html"> <img src="./posts/2022-12-18_Storing-custom-token-classification-labels-in-a-Hugging-Face-dataset/fish.png" class="thumnail-image"> </a></p>
+</div>
+<div class="body">
+<a href="./posts/2022-12-18_Storing-custom-token-classification-labels-in-a-Hugging-Face-dataset/index.html">
+<h3 class="no-anchor listing-title">
+Storing custom token classification labels in a Hugging Face dataset
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('tips and tricks'); return false;">
+tips and tricks
+</div>
+</div>
+<a href="./posts/2022-12-18_Storing-custom-token-classification-labels-in-a-Hugging-Face-dataset/index.html">
+<div class="listing-description">
+In my previous blog post, I showed how I created a Hugging Face dataset for detecting OCR mistakes. One thing thing that annoyed me about this dataset is that it didn’t contain the names of the…<code></code><code></code>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/2022-12-18_Storing-custom-token-classification-labels-in-a-Hugging-Face-dataset/index.html">
+<div class="listing-date">
+Dec 18, 2022
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="1" data-categories="ocr post-correction" data-listing-date-sort="1666310400000" data-listing-file-modified-sort="1671376436498" data-listing-reading-time-sort="13.175">
 <div class="thumbnail">
 <p><a href="./posts/01_Detecting-OCR-mistakes-experiment-1/index.html"> <img src="./posts/01_Detecting-OCR-mistakes-experiment-1/woman_with_newspaper.png" class="thumnail-image"> </a></p>
 </div>
@@ -182,7 +216,7 @@ ocr post-correction
 </div>
 <a href="./posts/01_Detecting-OCR-mistakes-experiment-1/index.html">
 <div class="listing-description">
-Some years ago, I did a project with the Dutch National Library on OCR post-correction. I wanted to investigate the potential of Deep Learning for correcting OCR errors in text. For various reasons, we never got very good results. Around the same time, two competitions on post-OCR text correction were organized at the ICDAR conference (2017 and 2019). I remained interested in the problem and started working on reproducing the competition results in my free time.
+Some years ago, I did a project with the Dutch National Library on OCR post-correction. I wanted to…
 </div>
 </a>
 </div>
@@ -240,7 +274,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
     button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
     setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
       button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
     }, 1000);
@@ -276,24 +327,42 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
   var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
   for (var i=0; i<bibliorefs.length; i++) {
     const ref = bibliorefs[i];
-    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
-    tippyHover(ref, function() {
-      var popup = window.document.createElement('div');
-      cites.forEach(function(cite) {
-        var citeDiv = window.document.createElement('div');
-        citeDiv.classList.add('hanging-indent');
-        citeDiv.classList.add('csl-entry');
-        var biblioDiv = window.document.getElementById('ref-' + cite);
-        if (biblioDiv) {
-          citeDiv.innerHTML = biblioDiv.innerHTML;
-        }
-        popup.appendChild(citeDiv);
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
       });
-      return popup.innerHTML;
-    });
+    }
   }
 });
 </script>
