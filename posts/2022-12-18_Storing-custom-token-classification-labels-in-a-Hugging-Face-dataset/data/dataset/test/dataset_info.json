@@ -1,0 +1,98 @@
+{
+  "builder_name": "json",
+  "citation": "",
+  "config_name": "default",
+  "dataset_size": 81856676,
+  "description": "",
+  "download_checksums": {
+    "icdar-dataset-20220506/icdar_test.jsonl": {
+      "checksum": "063dfea91bfc049e3aa7403ea8c85aae6cf8505c36c02576c4afdd0f7e733a16",
+      "num_bytes": 13576817
+    },
+    "icdar-dataset-20220506/icdar_train.jsonl": {
+      "checksum": "b175c5f84460b66d9613a93d859ad0e64e0955692a08e4e5090fa1cde0eb8137",
+      "num_bytes": 44375714
+    },
+    "icdar-dataset-20220506/icdar_val.jsonl": {
+      "checksum": "e8193e74bf70b5963d76c114f79318d6ba9cf810ff168d67a2659f6d0fc34bec",
+      "num_bytes": 4947500
+    }
+  },
+  "download_size": 62900031,
+  "features": {
+    "key": {
+      "dtype": "string",
+      "id": null,
+      "_type": "Value"
+    },
+    "language": {
+      "dtype": "string",
+      "id": null,
+      "_type": "Value"
+    },
+    "score": {
+      "dtype": "float64",
+      "id": null,
+      "_type": "Value"
+    },
+    "start_token_id": {
+      "dtype": "int64",
+      "id": null,
+      "_type": "Value"
+    },
+    "tags": {
+      "feature": {
+        "dtype": "int64",
+        "id": null,
+        "_type": "Value"
+      },
+      "length": -1,
+      "id": null,
+      "_type": "Sequence"
+    },
+    "tokens": {
+      "feature": {
+        "dtype": "string",
+        "id": null,
+        "_type": "Value"
+      },
+      "length": -1,
+      "id": null,
+      "_type": "Sequence"
+    }
+  },
+  "homepage": "",
+  "license": "",
+  "post_processed": null,
+  "post_processing_size": null,
+  "size_in_bytes": 144756707,
+  "splits": {
+    "test": {
+      "name": "test",
+      "num_bytes": 17251819,
+      "num_examples": 25902,
+      "dataset_name": "json"
+    },
+    "train": {
+      "name": "train",
+      "num_bytes": 58123799,
+      "num_examples": 87508,
+      "dataset_name": "json"
+    },
+    "val": {
+      "name": "val",
+      "num_bytes": 6481058,
+      "num_examples": 9774,
+      "dataset_name": "json"
+    }
+  },
+  "supervised_keys": null,
+  "task_templates": null,
+  "version": {
+    "version_str": "0.0.0",
+    "description": null,
+    "major": 0,
+    "minor": 0,
+    "patch": 0
+  }
+}

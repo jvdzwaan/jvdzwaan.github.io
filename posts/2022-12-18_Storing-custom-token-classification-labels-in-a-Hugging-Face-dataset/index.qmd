@@ -1,0 +1,72 @@
+---
+title: "Storing custom token classification labels in a Hugging Face dataset"
+date: "2022-12-18"
+categories: ["tips and tricks"]
+image: "fish.png"
+---
+
+In [my previous blog post](../01_Detecting-OCR-mistakes-experiment-1/index.qmd),
+I showed how I created a Hugging Face dataset for detecting OCR mistakes.
+One thing thing that annoyed me about this dataset is that it didn't contain the
+names of the token labels. I searched for the solution and tried different
+things, but couldn't figure out how to do it. Then finally, when I had some time
+and was browsing
+[the Hugging Face dataset documentation](https://huggingface.co/docs/datasets/package_reference/main_classes#datasets.DatasetDict),
+I found methods `cast()` and `cast_column()` that allow you update the dataset
+features and properly set the class labels.
+
+[![Twelve species of fish, Carl Cristiaan Fuchs (1802 - 1855)](fish.png)](http://hdl.handle.net/10934/RM0001.COLLECT.309516)
+
+First, load the dataset without the class labels:
+
+
+```{python}
+from datasets import load_from_disk
+
+dataset = load_from_disk('data/dataset')
+```
+
+A sample from this dataset has the following features:
+
+```python
+dataset['train'][0]
+```
+
+```
+{
+    'key': 'FR/FR1/499.txt',
+    'start_token_id': 0,
+    'score': 0.0464135021,
+    'tokens': ['Johannes,', 'Dei', 'gratia,', 'Francorum', 'rex.', 'Notum', 'facimus', 'universis,', 'tam', 'presentibus', 'quam', 'futuris,', 'nobis,', 'ex', 'parte', 'Petri', 'juvenis', 'sentiferi', 'qui', 'bene', 'et', 'fideliter', 'in', 'guerris', 'nostris', 'nobis', 'servivit', 'expositum', 'fuisse,', 'qod', 'cum', 'ipse,', 'tam', 'nomine', 'suo'],
+    'tags': [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0],
+    'language': 'FR'
+}
+
+```
+
+When looking at the features of the dataset, we see that the `tags` column is of
+type (`Sequence` of) `Value` (and not of (`Sequence` of) `ClassLabel`).
+
+```{python}
+dataset['train'].features
+```
+
+The next step is to call the `cast_column` method with the correct properties:
+
+```{python}
+from datasets import Sequence, ClassLabel
+
+dataset = dataset.cast_column('tags', Sequence(feature=ClassLabel(num_classes=3, names=['O', 'OCR-Mistake-B', 'OCR-Mistake-I']), length=-1))
+```
+
+
+After this update, the label names and label to name mapping are stored in the dataset:
+
+```{python}
+dataset['train'].features["tags"].feature.names
+```
+
+
+```{python}
+dataset['train'].features["tags"].feature._str2int
+```
