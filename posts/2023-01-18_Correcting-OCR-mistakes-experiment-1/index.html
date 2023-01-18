@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.313">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2023-01-18">
+
+<title>Janneke van der Zwaan - A basic model and training pipeline for correcting OCR mistakes</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Janneke van der Zwaan</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jvdzwaan"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/jvdzwa"><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">A basic model and training pipeline for correcting OCR mistakes</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">ocr post-correction</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">January 18, 2023</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<p>Of course, just <a href="../../posts/01_Detecting-OCR-mistakes-experiment-1/index.html">detecting OCR mistakes</a> doesn’t quite cut it. It is the corrections we are interested in! Since a correction model needs to be trained from scratch, I start simple. The goal is not to get high performance, but to get a basic model architecture and training pipeline that can be improved upon.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="http://hdl.handle.net/10934/RM0001.COLLECT.363026"><img src="woman_desk.png" class="img-fluid figure-img"></a></p>
+<p></p><figcaption class="figure-caption">Cutout from a cover design by Willy Sluiter (1915)</figcaption><p></p>
+</figure>
+</div>
+<section id="the-data" class="level2">
+<h2 class="anchored" data-anchor-id="the-data">The Data</h2>
+<p>The input data for the basic correction model consists of all unique pairs of ocr mistakes and their corrections. Please note that while this dataset does contain all possible correction options for an ocr mistake, the frequency of mistakes and the context in which they occur are not taken into account.</p>
+<p>The code for generating the dataset can be found in <a href="https://github.com/jvdzwaan/ocrpostcorrection-notebooks/blob/7b1176d3fbccd3a4a3757961ef863c42e37c656a/local/icdar-task2-create-dataset.ipynb">this notebook</a>. Much of the required functionality can be found in my <a href="https://jvdzwaan.github.io/ocrpostcorrection/">ocrpostcorrection</a> package. OCR mistakes and corrections can be extracted from a <a href="https://jvdzwaan.github.io/ocrpostcorrection/icdar_data.html#text"><code>Text</code></a> object by looping over the <a href="https://jvdzwaan.github.io/ocrpostcorrection/icdar_data.html#alignedtoken"><code>AlignedToken</code></a>s and extracting those for which the OCR text and GS differ. The <a href="https://jvdzwaan.github.io/ocrpostcorrection/error_correction.html#get_tokens_with_ocr_mistakes"><code>get_tokens_with_OCR_mistakes()</code></a> function does just that:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ocrpostcorrection.icdar_data <span class="im">import</span> generate_data</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ocrpostcorrection.error_correction <span class="im">import</span> get_tokens_with_OCR_mistakes</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>in_dir <span class="op">=</span> Path(<span class="st">'/path/to/ICDAR/2019/training/dataset'</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>data, md <span class="op">=</span> generate_data(in_dir)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>in_dir <span class="op">=</span> Path(<span class="st">'/path/to/ICDAR/2019/test/dataset'</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>data_test, md_test <span class="op">=</span> generate_data(in_dir)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>pd.read_csv(Path(<span class="st">'path/to/validation/files'</span>), index_col<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>val_file_names <span class="op">=</span> <span class="bu">list</span>(X_val.file_name)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> get_tokens_with_OCR_mistakes(data, data_test, val_file_names)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>When applied to the <a href="https://sites.google.com/view/icdar2019-postcorrectionocr/dataset">ICDAR 2019 competition on post-OCR text correction dataset</a>, the result is a pandas DataFrame containing 1,853,825 OCR, GS pairs divided over the train, val and test set. After dropping duplicates (on subset level) there are 1,130,067 pairs left.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> data.drop_duplicates(subset<span class="op">=</span>[<span class="st">'ocr'</span>, <span class="st">'gs'</span>, <span class="st">'dataset'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Subset</th>
+<th style="text-align: right;">With duplicates</th>
+<th style="text-align: right;">Without duplicates</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Train</td>
+<td style="text-align: right;">1,323,937</td>
+<td style="text-align: right;">760,429</td>
+</tr>
+<tr class="even">
+<td>Val</td>
+<td style="text-align: right;">145,425</td>
+<td style="text-align: right;">105,203</td>
+</tr>
+<tr class="odd">
+<td>Test</td>
+<td style="text-align: right;">384,463</td>
+<td style="text-align: right;">264,435</td>
+</tr>
+</tbody>
+</table>
+<p>The table below shows a sample of English OCR, GS pairs from the train set.</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">ocr</th>
+<th style="text-align: left;">gs</th>
+<th style="text-align: right;">len_ocr</th>
+<th style="text-align: right;">len_gs</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">js)Cf</td>
+<td style="text-align: left;">Her</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">rest)</td>
+<td style="text-align: left;">rest,</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">four,</td>
+<td style="text-align: left;">sour,</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Tbe</td>
+<td style="text-align: left;">be</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">thev</td>
+<td style="text-align: left;">they</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">4</td>
+</tr>
+</tbody>
+</table>
+<p>To get an idea of the distribution of the lengths of the OCR and GS strings, the following table lists descriptive statistics.</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">len_ocr</th>
+<th style="text-align: right;">len_gs</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">mean</td>
+<td style="text-align: right;">9.11</td>
+<td style="text-align: right;">8.72</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">std</td>
+<td style="text-align: right;">10.36</td>
+<td style="text-align: right;">7.75</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">25%</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">50%</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">75%</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">11</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">3255</td>
+<td style="text-align: right;">2986</td>
+</tr>
+</tbody>
+</table>
+<p>The lenghts of OCR and GS strings are quite comparable; the means and standard deviations do not differ that much. There seem to be some outliers, i.e., very long OCR/GS strings. The next table shows some samples of very long OCR strings.</p>
+<table class="table">
+<colgroup>
+<col style="width: 32%">
+<col style="width: 26%">
+<col style="width: 21%">
+<col style="width: 19%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">ocr (truncated)</th>
+<th style="text-align: left;">gs</th>
+<th style="text-align: right;">len_ocr</th>
+<th style="text-align: right;">len_gs</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1 45 ] 5 20 ih 1 43 ’7 30 5 5 sets 4.1 IQ N 67 A 18)39 21 2 -i&gt; 25 s8 22 9 3 2 1 36 24 4 Perhapsthey (…)</td>
+<td style="text-align: left;">127.</td>
+<td style="text-align: right;">1447</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">blijvende Leer aren, (want de Labadisten , dezelfde beginfels heb bendé, maar ze in de praktijk ook (…)</td>
+<td style="text-align: left;">PHILADELPHUS</td>
+<td style="text-align: right;">1043</td>
+<td style="text-align: right;">12</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ttget t aut terret: StUla, Scylla: • %ptewacy, P siacy. • Sy la, Scylla: • Mik s, Malusi •- I H* Puisćiy Iz aćhtom (…)</td>
+<td style="text-align: left;">TERMINACH</td>
+<td style="text-align: right;">665</td>
+<td style="text-align: right;">9</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">tono? Gracioso. Vale también chistoso, agudo , lle no de donáire y gracia. Lat. Facetus. Lepidus. Festivas. Lop. (…)</td>
+<td style="text-align: left;">tono?</td>
+<td style="text-align: right;">540</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Señal de Cosín (4&gt;) de 40° 28’ i 3” Los datos para el calculo fon Altura del centro del Sol 1 4$ Refracción (…)</td>
+<td style="text-align: left;">Señal</td>
+<td style="text-align: right;">504</td>
+<td style="text-align: right;">5</td>
+</tr>
+</tbody>
+</table>
+<p>While the OCR strings are very long, the GS strings are much shorter. Clearly, these are bad examples for learning to correct OCR mistakes and should be removed from the data. This will be done by setting a threshold on OCR and GS string length. The threshold will be selected by looking at the histograms of the lengths of the OCR strings. (The histograms of the lenghts of the GS strings are very comparable, and have been omitted.)</p>
+<p><img src="hist_len_ocr_1.png" class="img-fluid"></p>
+<p>As became apparent from the descriptive statistics, most OCR strings are short. However, the scale of the figure makes it hard to determine an appropriate threshold. Cutting off the peak makes it a little easier to see the distribution of OCR lengths.</p>
+<p><img src="hist_len_ocr_2.png" class="img-fluid"></p>
+<p>As lengths over 500 characters are very infrequent, they are ignored in the next histogram.</p>
+<p><img src="hist_len_ocr_3.png" class="img-fluid"></p>
+<p>The next histogram is zoomed in to a string length of 100 characters.</p>
+<p><img src="hist_len_ocr_4.png" class="img-fluid"></p>
+<p>As there are still over 5000 examples of OCR strings with a length of 22, and then the frequencies drop quickly, the length of 22 characters is selected as threshold. The same threshold was picked for the GS.</p>
+<p>The next steps are to create a <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset">pytorch Dataset</a> and <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader">DataLoader</a>. To convert the tokens into tensors, we need vocabularies and conversion functions.</p>
+<p>First, the train and validation set are selected:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>train <span class="op">=</span> data.query(<span class="st">'dataset == "train"'</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>val <span class="op">=</span> data.query(<span class="st">'dataset == "val"'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>And used as input for a pytorch Dataset:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.utils.data <span class="im">import</span> Dataset</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> SimpleCorrectionDataset(Dataset):</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, data, max_len<span class="op">=</span><span class="dv">10</span>):</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.ds <span class="op">=</span> data.query(<span class="ss">f'len_ocr &lt;= </span><span class="sc">{</span>max_len<span class="sc">}</span><span class="ss">'</span>).query(<span class="ss">f'len_gs &lt;= </span><span class="sc">{</span>max_len<span class="sc">}</span><span class="ss">'</span>).copy()</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.ds <span class="op">=</span> <span class="va">self</span>.ds.reset_index(drop<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__len__</span>(<span class="va">self</span>):</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.ds.shape[<span class="dv">0</span>]</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__getitem__</span>(<span class="va">self</span>, idx):</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        sample <span class="op">=</span> <span class="va">self</span>.ds.loc[idx]</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> [char <span class="cf">for</span> char <span class="kw">in</span> sample.ocr], [char <span class="cf">for</span> char <span class="kw">in</span> sample.gs]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The <code>SimpleCorrectionDataset</code> selects all OCR, GS pairs of a certain length (<code>__init__</code>) and returns individual samples. For this dataset, a sample consist of a list containing the characters in the OCR string and a list containing the characters in the GS string (<code>__getitem__</code>).</p>
+<p>These lists of characters must be converted to tensors, the EOS token has to be added and the samples need to be batched. The code for doing these transformations is based on this <a href="https://pytorch.org/tutorials/beginner/translation_transformer.html">pytorch language translation tutorial</a>.</p>
+<p>To convert characters to numbers, vocabularies are created from the train set.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ocrpostcorrection.error_correction <span class="im">import</span> generate_vocabs, get_text_transform</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>vocab_transform <span class="op">=</span> generate_vocabs(train)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>text_transform <span class="op">=</span> get_text_transform(vocab_transform)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The <code>generate_vocabs()</code> function returns a dictionary containing two <a href="https://pytorch.org/text/stable/vocab.html">torchtext.Vocabs</a>, one containing for converting OCR texts into numbers and one for converting GS texts into numbers.</p>
+<p><code>Get_text_transforms()</code> returns functions for converting OCR or GS text into tensors:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>text_transform <span class="op">=</span> get_text_transform(vocab_transform)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(text_transform[<span class="st">'ocr'</span>]([<span class="st">'t'</span>, <span class="st">'e'</span>, <span class="st">'s'</span>, <span class="st">'t'</span>]))</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(text_transform[<span class="st">'gs'</span>]([<span class="st">'t'</span>, <span class="st">'e'</span>, <span class="st">'s'</span>, <span class="st">'t'</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Which results in:</p>
+<pre><code>tensor([ 6,  4, 20,  6,  3])
+tensor([ 8,  4, 17,  8,  3])</code></pre>
+<p>The different numbers in the tensors show that the OCR and GS vocabulary differ. The last element of the tensors (3) refers to the special ‘End of Sequence’ (EOS) character index.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.utils.data <span class="im">import</span> DataLoader</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ocrpostcorrection.error_correction <span class="im">import</span> SimpleCorrectionDataset, collate_fn</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>max_len <span class="op">=</span> <span class="dv">22</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>batch_size <span class="op">=</span> <span class="dv">256</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>train_dataset <span class="op">=</span> SimpleCorrectionDataset(train, max_len<span class="op">=</span>max_len)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>train_dataloader <span class="op">=</span> DataLoader(train_dataset, shuffle<span class="op">=</span><span class="va">True</span>, batch_size<span class="op">=</span>batch_size, collate_fn<span class="op">=</span>collate_fn(text_transform))</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>val_dataset <span class="op">=</span> SimpleCorrectionDataset(val, max_len<span class="op">=</span>max_len)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>val_dataloader <span class="op">=</span> DataLoader(val_dataset, batch_size<span class="op">=</span>batch_size, collate_fn<span class="op">=</span>collate_fn(text_transform))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>After setting the maximum character length of the OCR and GS strings and choosing a batch size, the datasets and data loaders are created. Creating the data loaders requires a <code>collate_fn</code> that applies the <code>text_transform</code>s and adds padding for a batch of GS/OCR pairs. The exact implementation can be found in the <a href="https://github.com/jvdzwaan/ocrpostcorrection/blob/13d85dcd846b685554ff247d48d75feb6be84c59/ocrpostcorrection/error_correction.py">ocrpostcorrection package</a>.</p>
+<p>The resulting train set contains 744,738 samples, and the validation set contains 103,272 samples. The test set and data loader are created in the same way. The test set contains 203,151 samples.</p>
+</section>
+<section id="the-model" class="level2">
+<h2 class="anchored" data-anchor-id="the-model">The Model</h2>
+<p>The model is a seq2seq model taken from a <a href="https://pytorch.org/tutorials/intermediate/seq2seq_translation_tutorial.html">pytorch tutorial on machine translation</a>. It consists of an RNN encoder and an RNN decoder with attention. The encoder and decoder have been combined into the <a href="https://jvdzwaan.github.io/ocrpostcorrection/error_correction.html#simplecorrectionseq2seq"><code>ocrpostcorrection.error_correction.SimpleCorrectionSeq2seq</code></a> model class.</p>
+<p>The model was created as follows:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>hidden_size <span class="op">=</span> <span class="dv">256</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>dropout <span class="op">=</span> <span class="fl">0.1</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>teacher_forcing_ratio <span class="op">=</span> <span class="fl">0.5</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>device <span class="op">=</span> torch.device(<span class="st">"cuda"</span> <span class="cf">if</span> torch.cuda.is_available() <span class="cf">else</span> <span class="st">"cpu"</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> SimpleCorrectionSeq2seq(<span class="bu">len</span>(vocab_transform[<span class="st">'ocr'</span>]),</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>                                hidden_size,</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>                                <span class="bu">len</span>(vocab_transform[<span class="st">'gs'</span>]),</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>                                dropout,</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>                                max_len,</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>                                teacher_forcing_ratio<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>                                device<span class="op">=</span>device)</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>model.to(device)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="training" class="level2">
+<h2 class="anchored" data-anchor-id="training">Training</h2>
+<p>The model is trained with the following code:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>optimizer <span class="op">=</span> torch.optim.Adam(model.parameters())</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>msp <span class="op">=</span> out_dir<span class="op">/</span><span class="st">'model.rar'</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>train_model(train_dl<span class="op">=</span>train_dataloader,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>            val_dl<span class="op">=</span>val_dataloader,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>            model<span class="op">=</span>model,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>            optimizer<span class="op">=</span>optimizer,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>            model_save_path<span class="op">=</span>msp,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>            num_epochs<span class="op">=</span><span class="dv">25</span>,</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>            valid_niter<span class="op">=</span><span class="dv">1000</span>,</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>            max_num_patience<span class="op">=</span><span class="dv">5</span>,</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>            max_num_trial<span class="op">=</span><span class="dv">5</span>,</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>            lr_decay<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>            device<span class="op">=</span>device)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The complete <code>train_model()</code> method can be found in the <a href="https://github.com/jvdzwaan/ocrpostcorrection-notebooks/blob/0fa7f2e36a02e5a25275983f58631dfa7b189f71/colab/icdar-task2-seq2seq-evaluation.ipynb">training notebook</a>. It uses learning rate decay and early stopping. Also, the model is saved only when the loss on the validation set is lower than for the previous best model.</p>
+<p>The best model was saved after 49,000 iterations (~17 epochs). For this model, the loss on the train set is 9.34 and 8.45 on the validation set. It may seem strange that the loss on the train set is higher than the loss on the validation set. This has to do with the fact that the loss on the train set is measures with dropout, while the loss on the trainset is measured without dropout. (See <a href="https://towardsdatascience.com/what-your-validation-loss-is-lower-than-your-training-loss-this-is-why-5e92e0b1747e">this blog post</a> for reasons why the validation loss may be below the train loss.)</p>
+</section>
+<section id="results" class="level2">
+<h2 class="anchored" data-anchor-id="results">Results</h2>
+<p>The code for generating predictions for the test set can be found in the <a href="https://github.com/jvdzwaan/ocrpostcorrection-notebooks/blob/0fa7f2e36a02e5a25275983f58631dfa7b189f71/colab/icdar-task2-seq2seq-evaluation.ipynb">icdar-task2-seq2seq-evaluation notebook</a>. First a dataset and data loader are created:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>max_len <span class="op">=</span> <span class="dv">22</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>batch_size <span class="op">=</span> <span class="dv">256</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>test_dataset <span class="op">=</span> SimpleCorrectionDataset(test, max_len<span class="op">=</span>max_len)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>test_dataloader <span class="op">=</span> DataLoader(test_dataset, batch_size<span class="op">=</span>batch_size, collate_fn<span class="op">=</span>collate_fn(text_transform))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Next, the model is loaded:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>model_save_path <span class="op">=</span> data_base_dir<span class="op">/</span><span class="st">'results'</span><span class="op">/</span><span class="st">'simple_correction_model_2023-01-14'</span><span class="op">/</span><span class="st">'model.rar'</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>checkpoint <span class="op">=</span> torch.load(model_save_path, map_location<span class="op">=</span>torch.device(device))</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>model.load_state_dict(checkpoint[<span class="st">'model_state_dict'</span>])</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>optimizer.load_state_dict(checkpoint[<span class="st">'optimizer_state_dict'</span>])</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> model.to(device)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Subsequently, <a href="https://jvdzwaan.github.io/ocrpostcorrection/error_correction.html#validate_model"><code>ocrpostcorrection.error_correction.validate_model</code></a> is used to calculate the loss on the test set.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ocrpostcorrection.error_correction <span class="im">import</span> validate_model</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>validate_model(model, test_dataloader, device)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The result is 9.43, which is slightly higher than the loss on the train set.</p>
+<p>Finally, the model is used to generate predictions for the test set:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ocrpostcorrection.error_correction <span class="im">import</span> predict_and_convert_to_str</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>predictions <span class="op">=</span> predict_and_convert_to_str(model, test_dataloader, vocab_transform[<span class="st">'gs'</span>], device)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The predictions are stored in a pandas DataFrame:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>test_results <span class="op">=</span> test.query(<span class="ss">f'len_ocr &lt;= </span><span class="sc">{</span>max_len<span class="sc">}</span><span class="ss">'</span>).query(<span class="ss">f'len_gs &lt;= </span><span class="sc">{</span>max_len<span class="sc">}</span><span class="ss">'</span>).copy()</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>test_results[<span class="st">'pred'</span>] <span class="op">=</span> predictions</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The code for analyzing the results can be found in a <a href="https://github.com/jvdzwaan/ocrpostcorrection-notebooks/blob/e48c90a773cd781751f7f559bfb448b4b2cd0fd1/local/icdar-task2-results-analysis.ipynb">separate notebook</a>. To assess performance, the mean edit distance between the OCR and GS strings is compared to the mean edit distance between the OCR and predicted strings:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> edlib</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>test_results[<span class="st">'ed'</span>] <span class="op">=</span> test_results.<span class="bu">apply</span>(<span class="kw">lambda</span> row: edlib.align(row.ocr, row.gs)[<span class="st">'editDistance'</span>], axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>test_results[<span class="st">'ed_pred'</span>] <span class="op">=</span> test_results.<span class="bu">apply</span>(<span class="kw">lambda</span> row: edlib.align(row.pred, row.gs)[<span class="st">'editDistance'</span>], axis<span class="op">=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The results are summarized in the following table.</p>
+<table class="table">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 12%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Edit distance</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">std</th>
+<th style="text-align: right;">min</th>
+<th style="text-align: right;">25%</th>
+<th style="text-align: right;">50%</th>
+<th style="text-align: right;">75%</th>
+<th style="text-align: right;">max</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">OCR -&gt; GS</td>
+<td style="text-align: right;">2.99</td>
+<td style="text-align: right;">2.26</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">22</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">OCR -&gt; pred</td>
+<td style="text-align: right;">2.11</td>
+<td style="text-align: right;">2.53</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">23</td>
+</tr>
+</tbody>
+</table>
+<p>The mean edit distance dropped from 2.99 to 2.11. The table shows that the model is correctly predicting the GS string for at least 25% of the samples. On the other hand, the maximum edit distance increases with 1. So, while the model corrects some OCR strings, it worsens the edit distance for others.</p>
+<p>There are four possible result types for individual strings:</p>
+<ol type="1">
+<li>correct prediction (edit distance is 0)</li>
+<li>edit distance improved</li>
+<li>no change
+<ol type="1">
+<li>prediction is equal to the OCR string</li>
+<li>prediction is not equal to the OCR string</li>
+</ol></li>
+<li>edit distance increased</li>
+</ol>
+<p>Let’s count how often these different types occur.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> classify_ed_difference(row):</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> row.ed_pred <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>        result <span class="op">=</span> <span class="st">'correct prediction'</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> row.ed_pred <span class="op">&lt;</span> row.ed:</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>        result <span class="op">=</span> <span class="st">'edit distance improved'</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> row.ed_pred <span class="op">==</span> row.ed:</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> row.ocr <span class="op">==</span> row.pred:</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>            result <span class="op">=</span> <span class="st">'no change (prediction equal to ocr)'</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>            result <span class="op">=</span> <span class="st">'no change (prediction not equal to ocr)'</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> row.ed_pred <span class="op">&gt;</span> row.ed</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>        result <span class="op">=</span> <span class="st">'edit distance increased'</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>data[<span class="st">'ed_diff_class'</span>] <span class="op">=</span> data.<span class="bu">apply</span>(<span class="kw">lambda</span> row: classify_ed_difference(row), axis<span class="op">=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The table below displays the raw counts and percentage of samples from the train set that belong to each type of edit distance change.</p>
+<table class="table">
+<colgroup>
+<col style="width: 54%">
+<col style="width: 22%">
+<col style="width: 22%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">count</th>
+<th style="text-align: right;">%</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">correct prediction</td>
+<td style="text-align: right;">76708</td>
+<td style="text-align: right;">29.56</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">edit distance improved</td>
+<td style="text-align: right;">71862</td>
+<td style="text-align: right;">27.70</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">no change (prediction equal to ocr)</td>
+<td style="text-align: right;">31597</td>
+<td style="text-align: right;">12.18</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">no change (prediction not equal to ocr)</td>
+<td style="text-align: right;">38762</td>
+<td style="text-align: right;">14.94</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">edit distance increased</td>
+<td style="text-align: right;">40537</td>
+<td style="text-align: right;">15.62</td>
+</tr>
+</tbody>
+</table>
+<p>Almost 30% of the OCR mistakes are corrected. Of course, these results do not take into account how often each OCR mistake occurs or how much mistakes in a complete text will be fixed. Also, it is quite likely that the model makes correct predictions for easier mistakes. This is supported by the results in the image below. This figure contains boxplots of the length of the OCR strings separated by type of edit distance change. We see that the mean OCR length of correct predictions is lower than than for the OCR mistakes for which the edit distance increased.</p>
+<p><img src="boxplot.png" class="img-fluid"></p>
+<p>A more detailed analysis of the performance and errors are left for future blog posts. For now, the basic model and training pipeline are enough.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://utteranc.es/client.js" repo="jvdzwaan/jvdzwaan.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
