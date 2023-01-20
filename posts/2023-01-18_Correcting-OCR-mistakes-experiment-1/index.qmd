@@ -294,8 +294,8 @@ when the loss on the validation set is lower than for the previous best model.
 The best model was saved after 49,000 iterations (~17 epochs). For this model,
 the loss on the train set is 9.34 and 8.45 on the validation set. It may seem
 strange that the loss on the train set is higher than the loss on the validation
-set. This has to do with the fact that the loss on the train set is measures
-with dropout, while the loss on the trainset is measured without dropout. (See
+set. This has to do with the fact that the loss on the train set is measured
+with dropout, while the loss on the validation set is measured without dropout. (See
 [this blog post](https://towardsdatascience.com/what-your-validation-loss-is-lower-than-your-training-loss-this-is-why-5e92e0b1747e)
 for reasons why the validation loss may be below the train loss.)
 
