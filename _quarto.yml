@@ -10,6 +10,8 @@ website:
         href: https://github.com/jvdzwaan
       - icon: twitter
         href: https://twitter.com/jvdzwa
+  twitter-card:
+    creator: "@jvdzwa"
 format:
   html:
     theme: flatly
