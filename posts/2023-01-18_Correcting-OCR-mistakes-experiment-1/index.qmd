@@ -370,7 +370,7 @@ The results are summarized in the following table.
 | Edit distance |   mean |   std |   min |   25% |   50% |   75% |   max |
 |:------------- |-------:|------:|------:|------:|------:|------:|------:|
 | OCR -> GS     |   2.99 |  2.26 |     1 |     1 |     2 |     4 |    22 |
-| OCR -> pred   |   2.11 |  2.53 |     0 |     0 |     1 |     3 |    23 |
+| pred -> GS    |   2.11 |  2.53 |     0 |     0 |     1 |     3 |    23 |
 
 The mean edit distance dropped from 2.99 to 2.11. The table shows that the model
 is correctly predicting the GS string for at least 25% of the samples. On the
