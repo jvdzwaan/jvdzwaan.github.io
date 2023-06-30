@@ -1,6 +1,0 @@
-@INPROCEEDINGS {zwaan_dh_2017,
-    author    = {Zwaan, {Janneke M. van der} and Smink, Wouter and Sools, Anneke and Westerhof, Gerben and Veldkamp, Bernard and Wiegersma, Sytske},
-    title     = "Flexible NLP Pipelines for Digital Humanities Research",
-    booktitle = "Digital Humanities",
-    year      = "2017"
-}

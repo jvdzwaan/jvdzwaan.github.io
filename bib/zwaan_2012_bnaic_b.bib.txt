@@ -1,7 +1,0 @@
-@inproceedings{zwaan_2012_bnaic_b,
-	Author = {{J.M. van der} Zwaan and V. Dignum and C.M. Jonker},
-	Booktitle = {Proceedings of the 24th Benelux Conference on Artificial Intelligence},
-	Editor = {Jos W.H.M. Uiterwijk and Nico Roos and Mark H.M. Winands},
-	Pages = {339--340},
-	Title = {A BDI Dialogue Agent for Social Support: Specification and Evaluation Method},
-	Year = {2012}}

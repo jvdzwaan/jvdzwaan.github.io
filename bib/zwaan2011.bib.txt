@@ -1,7 +1,0 @@
-@inproceedings{zwaan2011,
-	Author = {Zwaan, {J.M. van der} and Dignum, V. and Broekens, J. and Jonker, C.M.},
-	Booktitle = {Proceedings of the 15th Portuguese Conference on Artificial Intelligence},
-	Editor = {L. Antunes and H. S. Pinto and R. Prada and P. Trigo},
-	Pages = {1--15},
-	Title = {Empathic Virtual Buddy: Setting Up Informed Empathic Responses},
-	Year = {2011}}

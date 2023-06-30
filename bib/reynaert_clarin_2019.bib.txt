@@ -1,6 +1,0 @@
-@inproceedings{reynaert_clarin_2019,
-	title = {{Granularity versus Dispersion in the Dutch Diachronical Database of Lexical Frequencies TICCLAT}},
-	booktitle = {CLARIN Annual Conference},
-	author = {Reynaert, Martin and Bos, Patrick and van der Zwaan, Janneke},
-	year = {2019},
-}

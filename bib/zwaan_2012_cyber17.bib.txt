@@ -1,9 +1,0 @@
-@article{zwaan_2012_cyber17,
-	Author = {{J.M. van der} Zwaan and Geraerts, E. and Dignum, V. and Jonker, C.M.},
-	Journal = {Stud Health Technol Inform},
-	Journal-Full = {Studies in health technology and informatics},
-	Pages = {243-7},
-	Pmid = {22954864},
-	Title = {User Validation of an Empathic Virtual Buddy against Cyberbullying},
-	Volume = {181},
-	Year = {2012}}

@@ -1,6 +1,0 @@
-@inproceedings{reynaert_dhbenelux_2019,
-	title = {TICCLAT: a Dutch diachronical database of linked word-variants},
-	booktitle = {DHBenelux},
-	author = {Reynaert, Martin and Bos, Patrick and van der Zwaan, Janneke},
-	year = {2019},
-}

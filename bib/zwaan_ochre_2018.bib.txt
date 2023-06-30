@@ -1,9 +1,0 @@
-@misc{zwaan_ochre_2018,
-	type = {Conference {Poster}},
-	title = {Ochre, {A} {Toolbox} {For} {Ocr} {Post}-{Correction}},
-	url = {https://zenodo.org/record/1189245},
-	abstract = {One of the major challenges of using historical document collections for research is the fact that Optical Character Recognition (OCR) on these documents is far from perfect. One way the quality of OCR text can be improved is by applying OCR post-correction. OCR post-correction involves manipulating the (textual) output of the OCR process. Existing approaches for OCR post-correction generally make use of extensive dictionaries to replace words in the OCR text that do not occur in the dictionary with words that do. The main problem with these existing approaches is that they do not take into account the context in which words occur. By training character based language models using long short term memory networks, this context can be taken into account. The poster presents ochre, an open source software package for training character-based language models that can be used for OCR post-correction 1 . Ochre is based on Python deep learning library Keras 2 and uses common workflow language (CWL) 3 to ensure reproducibility and enable reuse. The first results of using LSTMs to correct OCR errors in the VU DNC corpus 4 are promising; the average character error rate per newspaper article drops from 3.72\% to 1.34\% using sequence to sequence, a neural network architecture that is also used for machine translation. In addition to functionality for training LSTMs, ochre provides an overview of OCR post-correction data sets, and tools and workflows to preprocess these datasets, do post-correction, assess the performance of the OCR post-correction, and analyze the types of errors that are corrected.},
-	author = {Zwaan, {Janneke van der} and Wilms, Lotte},
-	month = mar,
-	year = {2018},
-}
