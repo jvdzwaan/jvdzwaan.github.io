@@ -1,0 +1,228 @@
+---
+title: "Converting the error correction notebooks to a DVC pipeline"
+date: "2023-06-30"
+categories: ["ocr post-correction"]
+---
+
+Because ocr postcorrection is a hobby project, I don't have a lot of time to
+work on it. This means it is even more important to keep track of what
+I did. And of course, I didn't. I don't remember the details of what I did for
+the first error detection experiment; I created several versions of the dataset,
+and changed data processing and evaluation code.
+
+[![Pulling a boat, by Kamisaka Sekka (1909)](pulling-a-boat.jpg)](http://hdl.handle.net/10934/RM0001.COLLECT.47536)
+
+Also, I was getting fed up with manually
+copying data and models to and from Googlge Drive. High time for data versioning
+and experiment tracking! So, when I came across a
+[DVC course](https://learn.iterative.ai/course/data-scientist-path),
+I found the perfect excuse to replace the error detection notebooks with a DVC
+pipeline. My goal was to reproduce the results of the [first error detection
+experiment](../01_Detecting-OCR-mistakes-experiment-1/index.qmd).
+
+## The DVC pipeline
+
+There are three notebooks for running an error detection experiment:
+
+1. `icdar-create-hf-dataset.ipynb` for creating the dataset
+2. `icdar-task1-hf-train.ipynb` for training a model
+3. `icdar-task1-hf-evaluation.ipynb` for evaluating the model
+
+The first notebook was replaced by two pipeline steps; one to split the data in a
+training and validation set
+([`src/stages/data-split.py`](https://github.com/jvdzwaan/ocrpostcorrection-notebooks/blob/aed69d5f248d1474f3877d8e78df3b9b4bb60caf/src/stages/data-split.py))
+and one to create the actual datasets that serve as input for the model training
+([`src/stages/create-error-detection-dataset.py`](https://github.com/jvdzwaan/ocrpostcorrection-notebooks/blob/aed69d5f248d1474f3877d8e78df3b9b4bb60caf/src/stages/create-error-detection-dataset.py)).
+I wanted to have a separate data split stage, so I can use the same splits for
+the error correction task. The notebook for training a model was simply
+converted to a pipeline step
+([`src/stages/train-error-detection.py`](https://github.com/jvdzwaan/ocrpostcorrection-notebooks/blob/aed69d5f248d1474f3877d8e78df3b9b4bb60caf/src/stages/train-error-detection.py)).
+The evaluation notebook was a bit more complicated. After some experimenting, I
+came to the following division:
+
+* [`src/stages/predict-test-set-error-detection.py`](https://github.com/jvdzwaan/ocrpostcorrection-notebooks/blob/aed69d5f248d1474f3877d8e78df3b9b4bb60caf/src/stages/predict-test-set-error-detection.py): generate raw predictions
+* [`src/stages/convert-predictions-to-icdar-output.py`](https://github.com/jvdzwaan/ocrpostcorrection-notebooks/blob/aed69d5f248d1474f3877d8e78df3b9b4bb60caf/src/stages/convert-predictions-to-icdar-output.py): generate output in the icdar format
+* [`src/stages/evaluate-error-detection.py`](https://github.com/jvdzwaan/ocrpostcorrection-notebooks/blob/aed69d5f248d1474f3877d8e78df3b9b4bb60caf/src/stages/evaluate-error-detection.py): run the icdar evaluation script
+* [`src/stages/generate-error-detection-report.py`](https://github.com/jvdzwaan/ocrpostcorrection-notebooks/blob/aed69d5f248d1474f3877d8e78df3b9b4bb60caf/src/stages/generate-error-detection-report.py): generate copy-pastable performance report
+
+Because there were some problems with converting the (raw) model predictions
+into the expected icdar output format and the evaluation code, I decided to to
+split it all up in separate steps. Also, it made sense to me to have a
+separate step for generating copy-pastable results, so I would be able to change
+the performance report without having to rerun the prediction and evaluation.
+All pipeline steps are Python scripts and can be found in the
+[`src/stages/` directory in the ocrpostcorrection-notebooks repo](https://github.com/jvdzwaan/ocrpostcorrection-notebooks/tree/aed69d5f248d1474f3877d8e78df3b9b4bb60caf/src/stages).
+The scripts are called from
+[`dvc.yaml`](https://github.com/jvdzwaan/ocrpostcorrection-notebooks/blob/aed69d5f248d1474f3877d8e78df3b9b4bb60caf/dvc.yaml)
+which contains the pipeline and parameter settings are stored in
+[`params.yaml`](https://github.com/jvdzwaan/ocrpostcorrection-notebooks/blob/aed69d5f248d1474f3877d8e78df3b9b4bb60caf/params.yaml).
+
+## Running the pipeline on Google Colab
+
+To be able to run the pipeline on Google Colab, I added [a new notebook
+(`run-dvc.ipynb`)](https://github.com/jvdzwaan/ocrpostcorrection-notebooks/blob/aed69d5f248d1474f3877d8e78df3b9b4bb60caf/colab/run-dvc.ipynb).
+In addition to code to run the pipeline, the notebook also contains code for
+mounting Google Drive, cloning the ocrpostcorrection-notebooks repo, installing
+it, configuring the connection to the DVC remote (which is on Google Drive),
+pulling the data from and pushing updates to the DVC remote, and committing and
+pushing changes to GitHub.
+
+### Connecting to a DVC remote on Google Drive
+
+On Google Drive, I created a directory for storing the tracked data and stored
+the
+[URL with the folder ID](https://dvc.org/doc/user-guide/data-management/remote-storage/google-drive#url-format)
+in a `config.local` file. As recommended by DVC, I use a
+[Google Cloud project for accessing the remote](https://dvc.org/doc/user-guide/data-management/remote-storage/google-drive#using-a-custom-google-cloud-project-recommended)
+from Google Colab. The `config.local` file and generated OAuth credentials
+(`dvc-credentials.json`) are stored in another directory on Google Drive. In
+the notebook, `config.local` is copied to the `.dvc` directory of the cloned
+ocrpostcorrection-notebooks repository, so the remote can be accessed. The
+`config.local` file contains the following:
+
+```
+['remote "gdrive"']
+    url = gdrive://XXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    gdrive_service_account_json_file_path = /mntDrive/MyDrive/ocrpostcorrection-config/dvc-credentials.json
+    gdrive_use_service_account = true
+```
+
+We can now connect to the DVC remote to pull and push data.
+
+### Configuring git and GitHub
+
+Some of the outputs generated by the DVC pipeline are stored in git, so we also
+need to configure git and connect to GitHub.
+For using git on Google Colab, you need to set your user name and email address:
+
+```sh
+git config --global user.name "NAME"
+git config --global user.email "EMAIL ADDRESS"
+```
+
+To be able to push commits to GitHub, a remote needs to be added. For
+authentication, GitHub allows you to create
+[personal access tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
+I created a
+[fine-grained personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
+and stored it in a file on Google Drive in the same directory as the dvc
+configuration files. In the notebook, the token is read from file and used to
+add a remote:
+
+```Python
+token_file = "/mntDrive/MyDrive/ocrpostcorrection-config/github_token"
+with open(token_file) as f:
+    token = f.read().strip()
+```
+
+```sh
+! git remote add colab https://jvdzwaan:{token}@github.com/jvdzwaan/ocrpostcorrection-notebooks.git
+```
+
+## Some DVC tips and tricks
+
+While converting the notebooks to a DVC pipeline, I learned some things about
+using DVC.
+
+### If your data consists of many files, store them as a zip-file
+
+The [ICDAR data set consists of a little over 15,000 text files](https://sites.google.com/view/icdar2019-postcorrectionocr/dataset).
+My first idea was to just add all the files (in the original directory
+structure) as raw data. However, when I tried to pull the data on Colab, it
+took forever to get all the files. So instead, I added the zip-file as raw data.
+A disadvantage of this approach is that debugging becomes a little harder,
+because individual files can't be accessed directly anymore.
+
+### Storing intermediary data can be a pitfall
+
+A lot of
+[preprocessing](https://jvdzwaan.github.io/ocrpostcorrection/icdar_data.html)
+is required to convert the raw text files into a dataset (either for error
+detection or error correction). Preprocessing the complete dataset takes some
+time, so I wanted to store an intermediary version of the data. As the
+preprocessing code stores texts and tokens in custom objects, for a first
+attempt I tried serializing these objects using pickle. This worked, apart from
+the fact that the md5 hashes of the resulting changed with every run. I did
+quite some research to try to find find out why this happened, but I wasn't
+able to figure it out. For the second attempt I serialized to JSON. This also
+didn't work as desired, because loading the intermediary data took (way) longer
+than running the preprocessing. So, in the end I went with adding two data
+preprocessing methods
+([`get_intermediate_data()`](https://jvdzwaan.github.io/ocrpostcorrection/icdar_data.html#get_intermediate_data)
+and
+[`extract_icdar_data()`](https://jvdzwaan.github.io/ocrpostcorrection/icdar_data.html#extract_icdar_data))
+that are called in relevant pipeline steps.
+
+### Be careful with floats
+
+Another problem that I ran into was that the md5 hash for the Hugging Face
+Dataset was different when it was created on my laptop vs. when it was created
+on Google Colab. My first hunch was that this was due to differences in
+versions of dependencies. So I added proper dependency management using
+[Poetry](https://python-poetry.org). However, this didn't fix the different
+file hashes.
+
+My second hunch was that it had something to do with the scores column
+(normalized edit distance) in the dataset, because these are floats. I am aware
+that calculating floats on different types of hardware can result in different
+values (see, e.g.,
+[What Every Computer Scientist Should Know About Floating-Point Arithmetic](https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html)
+or [The pitfalls of verifying floating-point computations](https://hal.science/file/index/docid/281429/filename/floating-point-article.pdf)),
+but I never expected that the md5 hash for a dataset with floats calculated on
+my laptop would be different when the file was transferred to Google Colab (or
+vice versa). It is perfectly possible that I made some other mistake that
+caused this problem, but removing the float column from the dataset fixed the
+issue, which was what I wanted to achieve.
+
+### Ignore cache files
+
+The error detection model is trained using
+[Hugging Face transformers](https://huggingface.co/docs/transformers/index).
+The dataset is a
+[Hugging Face Dataset](https://huggingface.co/docs/datasets/package_reference/main_classes#datasets.Dataset).
+When loading the dataset, Hugging Face creates cache files in the directory
+where the dataset is stored. This is a problem, because the existence of these
+cache files means that the md5 hash for the training input is different from
+the output of the dataset creation. As DVC uses the md5 hash to determine
+whether an input or output of a pipeline step changed and, therefore, needs to
+be run again to recreate the input/output. I solved this problem by adding
+Hugging Face cache files to the
+[`.dvcignore` file](https://dvc.org/doc/user-guide/project-structure/dvcignore-files).
+
+## Rerunning the first error detection experiment
+
+Of course, I can't exactly reproduce the first error detection experiment, but
+I tried using the same parameters as much as possible. One of the biggest
+differences between the first experiment (using notebooks) and the new one is
+the data split. Because I didn't use a seed when splitting the data for the
+first experiment, this part can't be reproduced. The table below shows the
+losses for the first experiment ('Experiment notebooks') and two variations of
+the DVC pipeline. For 'Experiment DVC' the dataset split was stratified on
+language and I also ran the pipeline for a dataset split (with the same seed)
+stratified on (language) subset. The table below shows that the losses for the
+models trained with the DVC pipline are a bit lower.
+
+| Loss | Train | Val | Test |
+| --- | --- | --- | --- |
+| Experiment notebooks | 0.2539 | 0.2906 | - |
+| Experiment DVC | 0.2398 | 0.2872 | 0.4475 |
+| Experiment DVC stratified on subset | 0.2439 | 0.2839 | 0.4422 |
+
+The results are similar for the F1 scores per language (see table below). The
+performance for the DVC pipelines is better. Because, in the mean time, I also
+fixed a bug in the evaluation script, the table contains an additional row with
+results for the orginal evaluation script. We see that only the results from
+French suffered from this bug.
+
+| Method | BG | CZ | DE | EN | ES | FI | FR | NL | PL | SL |
+| -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- |
+| Experiment notebooks | 0.74 | 0.64 | 0.93 | 0.62 | 0.59 | 0.82 | 0.59 | 0.66 | 0.77 | 0.63 |
+| Experiment DVC | 0.75 | 0.68 | 0.96 | 0.66 | 0.64 | 0.83 | 0.69 | 0.69 | 0.81 | 0.67 |
+| Experiment DVC stratified on subset | 0.75 | 0.69 | 0.96 | 0.67 | 0.63 | 0.83 | 0.69 | 0.69 | 0.81 | 0.68 |
+| Experiment DVC with old eval script (stratified on language) | 0.75 | 0.68 | 0.96 | 0.66 | 0.64 | 0.83 | 0.66 | 0.69 | 0.81 | 0.67 |
+
+Although I don't want to complain about getting better results, I'm not
+completely satisfied with the outcome. It is known that the ICDAR dataset is
+quite noisy, so the different data split is the most probable explanation for
+the differences in performance. Maybe I should console myself with the fact
+that from now on differences in performance are easier to trace.
