@@ -1,5 +1,5 @@
 ---
-title: "Converting the error correction notebooks to a DVC pipeline"
+title: "Converting the error detection notebooks to a DVC pipeline"
 date: "2023-06-30"
 categories: ["ocr post-correction"]
 ---
