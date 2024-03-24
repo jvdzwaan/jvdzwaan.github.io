@@ -17,3 +17,4 @@ format:
     theme: flatly
     css: styles.css
     include-after-body: footer.html
+    from: markdown+emoji
