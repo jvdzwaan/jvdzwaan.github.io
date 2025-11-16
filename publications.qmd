@@ -4,7 +4,15 @@ title: "Publications"
 
 Publications by Janneke van der Zwaan.
 
-## 2021
+## Other Blog Posts
+
+* [Can LLMs Be Trusted as Annotation Judges? A Look into Document Relevance and Consistency](https://medium.com/ordina-data/can-llms-be-trusted-as-annotation-judges-a-look-into-document-relevance-and-consistency-2877975193a9) - 25-04-2025
+* [Testing shell commands from Python](https://blog.esciencecenter.nl/testing-shell-commands-from-python-2a2ec87ebf71) - 12-12-2018
+* [Jump start your Python project with this template](https://medium.com/escience-center/jump-start-your-python-project-with-this-template-ef52e6c1a2dc) - 01-08-2018
+
+## Scientific Publications
+
+### 2021
 
 * [Text Mining Islamic Law](https://brill.com/view/journals/ils/28/3/article-p234_234.xml)
 by Christian Lange, Maksim Abdul Latif, Yusuf Çelik, A. Melle Lyklema, Dafne E. van Kuppevelt, and Janneke van der Zwaan.
@@ -12,7 +20,7 @@ In: _Islamic Law and Society_, 28, pages 234-281, 2021.
 DOI: [10.1163/15685195-bja10009](https://brill.com/view/journals/ils/28/3/article-p234_234.xml)
 ([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/lange_et_al_2021.bib.txt))
 
-## 2019
+### 2019
 
 * [Are you sure your tool does what it is supposed to do? Validating Arabic root extraction](https://academic.oup.com/dsh/advance-article/doi/10.1093/llc/fqz045/5545478)
 by Janneke van der Zwaan,  Maksim Abdul Latif,  Dafne van Kuppevelt,  Melle Lyklema, and Christian Lange.
@@ -33,7 +41,7 @@ by Martin Reynaert, Patrick Bos, and Janneke van der Zwaan.
 In: _CLARIN Annual Conference_, 2019.
 ([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/reynaert_clarin_2019.bib.txt))
 
-## 2018
+### 2018
 
 * [Ochre, a Toolbox for OCR Post-Correction](https://doi.org/10.5281/zenodo.1189244) (poster)
 by Janneke van der Zwaan and Lotte Wilms.
@@ -45,7 +53,7 @@ by Dafne van Kuppevelt, Patrick Bos, Melle Lyklema, Umar Ryad, Christian Lange, 
 In: _Digital Humanities_, 2018.
 ([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/van_kuppevelt_bridging_2018.bib.txt))
 
-## 2017
+### 2017
 
 * [Flexible NLP Pipelines for Digital Humanities Research](https://dh2017.adho.org/abstracts/215/215.pdf) (abstract)
 by Janneke van der Zwaan, Wouter Smink, Anneke Sools, Gerben Westerhof, Bernard Veldkamp, and Sytske Wiegersma.
@@ -60,7 +68,7 @@ by Maarten van Meersbergen, Janneke van der Zwaan, Willem van Hage, Piek Vossen,
 In: _Proceedings of the 2017 EMNLP Workshop: Natural Language Processing meets Journalism_, 2017, pages 37-45.
 ([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/meersbergen_storyteller_2017.bib.txt))
 
-## 2016
+### 2016
 
 * [Validating Cross-perspective Topic Modeling for Extracting Political Parties' Positions from Parliamentary Proceedings](jvdzwaan.github.io/pdf/van_der_zwaan_validating_2016.pdf)
 by Janeke van der Zwaan, Maarten Marx, and Jaap Kamps.
@@ -77,7 +85,7 @@ by Janneke van der Zwaan, Maarten Marx, and Jaap Kamps.
 In: _DHBenelux_, 2016.
 ([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/zwaan_dhbenelux_2016.bib.txt))
 
-## 2015
+### 2015
 
 * [HEEM, a Complex Model for Mining Emotions in Historical Text](jvdzwaan.github.io/pdf/van_der_zwaan_heem_2015.pdf),
 by Janneke van der Zwaan, Inger Leemans, Erika Kuijpers, and Isa Maks.
@@ -85,14 +93,14 @@ In: _2015 IEEE 11th International Conference on e-Science_, 2015, pages 22-30.
 DOI: [10.1109/eScience.2015.18](https://doi.org/10.1109/eScience.2015.18)
 ([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/van_der_zwaan_heem_2015.bib.txt))
 
-## 2014
+### 2014
 
 * [An empathic virtual buddy for social support](https://www.narcis.nl/publication/RecordID/oai:tudelft.nl:uuid%3Af32371b2-82cc-414e-9569-2d56b12a530a),
 by Janneke van der Zwaan. PhD thesis, 2014.
 DOI: [10.4233/uuid:f32371b2-82cc-414e-9569-2d56b12a530a](https://doi.org/10.4233/uuid:f32371b2-82cc-414e-9569-2d56b12a530a)
 ([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/zwaan_phd_thesis_2014.bib.txt))
 
-## 2013
+### 2013
 
 * A Qualitative Evaluation of Social Support by an Empathic Agent,
 by Janneke van der Zwaan, Virginia Dignum, and Catholijn Jonker.
@@ -117,7 +125,7 @@ by Janneke van der Zwaan, Virginia Dignum, and Catholijn Jonker.
 In: _Proceedings of the 2013 Workshop on Computers as Social Actors_, 2013, pages 9-20.
 ([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/zwaan_2013_casa.bib.txt))
 
-## 2012
+### 2012
 
 * A Conversation Model Enabling Intelligent Agents to Give Emotional Support,
 by Janneke van der Zwaan, Virginia Dignum, and Catholijn Jonker.
@@ -150,21 +158,21 @@ by Janneke van der Zwaan, Virginia Dignum, and Catholijn Jonker.
 In: _Proceedings of the 24th Benelux Conference on Artificial Intelligence (BNAIC)_, 2012, pages 339-340.
 ([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/zwaan_2012_bnaic_b.bib.txt))
 
-## 2011
+### 2011
 
 * [Empathic Virtual Buddy: Setting Up Informed Empathic Responses](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.713.7126&rep=rep1&type=pdf),
 by Janneke van der Zwaan, Virginia Dignum, Joost Broekens, and Catholijn Jonker.
 In: _Proceedings of the 15th Portuguese Conference on Artificial Intelligence_, 2011, pages 1-15.
 ([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/zwaan2011.bib.txt))
 
-## 2010
+### 2010
 
 * [Simulating Peer Support for Victims of Cyberbullying](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.724.2423&rep=rep1&type=pdf),
 by Janneke van der Zwaan, Virginia Dignum, and Catholijn Jonker.
 In: _BNAIC 2010: 22rd Benelux Conference on Artificial Intelligence_, 2010.
 ([bibtex](https://raw.githubusercontent.com/jvdzwaan/jvdzwaan.github.io/master/bib/zwaan_bnaic_2010.bib.txt))
 
-## 2007
+### 2007
 
 * [An experiment in automatic classification of pathological reports](https://ifarm.nl/erikt/papers/aime2007.pdf),
 by Janneke van der Zwaan, Erik Tjong Kim Sang, and Maarten de Rijke.
